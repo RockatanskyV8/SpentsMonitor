@@ -2,14 +2,18 @@ package com.spentsmonitor.model;
 
 import java.util.Date;
 
+import com.spentsmonitor.model.enums.BillType;
+
 public class Bill {
 	private String name;
 	private Double value;
 	private Date paymentDate;
+	private BillType billType;
 	
-	public Bill(String name, Double value, Date paymentDate) {
+	public Bill(String name, Double value, BillType billtype, Date paymentDate) {
 		this.name = name;
 		this.value = value;
+		this.billType = billtype;
 		this.paymentDate = paymentDate;
 	}
 
@@ -37,9 +41,17 @@ public class Bill {
 		this.paymentDate = paymentDate;
 	}
 
+	public BillType getBillType() {
+		return billType;
+	}
+
+	public void setBillType(BillType billType) {
+		this.billType = billType;
+	}
+	
 	@Override
 	public String toString() {
-		return "Conta: " + name + ", Valor: " + value + ", Data do pagamento: " + paymentDate;
+		return "Conta: " + name + ", Valor: " + value + ", Tipo: " + billType.name() + ", Data do pagamento: " + paymentDate;
 	}
 	
 }
