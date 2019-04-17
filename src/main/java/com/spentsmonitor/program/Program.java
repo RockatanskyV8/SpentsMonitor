@@ -5,25 +5,31 @@ import java.text.SimpleDateFormat;
 
 import com.spentsmonitor.model.*;
 import com.spentsmonitor.model.enums.BillType;
+import com.spentsmonitor.database.*;
 
 public class Program {
 
 	public static void main(String[] args) {
 		
-		testProduct();
+		DBCreator.CreateNewDatabase("teste.db");
+		DBCreator.createTables("teste.db");
+		/*
 		try {
 			testBills();
+			testProduct();
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		
+		*/
 	}
 	
-	public static void testProduct() {
+	public static void testProduct() throws ParseException  {
 		
-		Product p1 = new Product("produto 1", 2.50, 4);
-		Product p2 = new Product("produto 2", 1.00, 2);
-		Product p3 = new Product("produto 3", 4.00, 5);
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		
+		Product p1 = new Product("produto 1", 2.50, sdf.parse("14/04/2017"), 4);
+		Product p2 = new Product("produto 2", 1.00, sdf.parse("14/04/2017"), 2);
+		Product p3 = new Product("produto 3", 4.00, sdf.parse("14/04/2017"), 5);
 		
 		System.out.println(p1);
 		System.out.println(p2);

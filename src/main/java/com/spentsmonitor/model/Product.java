@@ -1,14 +1,18 @@
 package com.spentsmonitor.model;
 
+import java.util.Date;
+
 public class Product {
 	
 	private String name;
 	private Double price;
+	private Date buyDate;
 	private Integer quantity;
 	
-	public Product(String name, Double price, Integer quantity) {
+	public Product(String name, Double price, Date buyDate,Integer quantity) {
 		this.name = name;
 		this.price = price;
+		this.buyDate = buyDate;
 		this.quantity = quantity;
 	}
 
@@ -36,6 +40,14 @@ public class Product {
 		this.quantity = quantity;
 	}
 	
+	public Date getBuyDate() {
+		return buyDate;
+	}
+
+	public void setBuyDate(Date buyDate) {
+		this.buyDate = buyDate;
+	}
+
 	public double total() {
 		return price * quantity;
 	}
