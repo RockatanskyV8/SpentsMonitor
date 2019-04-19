@@ -2,6 +2,7 @@ package com.spentsmonitor.program;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.sql.Date;
 
 import com.spentsmonitor.model.*;
 import com.spentsmonitor.model.enums.BillType;
@@ -9,10 +10,7 @@ import com.spentsmonitor.database.*;
 
 public class Program {
 
-	public static void main(String[] args) {
-		
-		DBCreator.CreateNewDatabase("teste.db");
-		DBCreator.createTables("teste.db");
+	public static void main(String[] args) throws ParseException {
 		/*
 		try {
 			testBills();
@@ -21,6 +19,16 @@ public class Program {
 			e.printStackTrace();
 		}
 		*/
+	}
+	
+	public static void testBD() {
+		
+		DBCreator.CreateNewDatabase("teste.db");
+		DBCreator.createTableBills("teste.db");
+		DBCreator.createTableProducts("teste.db");
+		DBCreator.createTableValues("teste.db");
+		//DBConnector.connect("teste.db");
+		
 	}
 	
 	public static void testProduct() throws ParseException  {
