@@ -71,14 +71,35 @@ public class DBCreator {
         String sql = "" 
                 + "CREATE TABLE IF NOT EXISTS costs (\n"//Values Table
                 + "	id integer PRIMARY KEY,\n"
-                + " quantity double NOT NULL,\n"
-                + "	cost real NOT NULL,\n"
+                + " quantity integer DEFAULT 1,\n"
+                + "	cost real,\n"
                 + "	spent_day date NOT NULL,\n"
                 + "	product_id integer,\n"
                 + "	bill_id integer,\n"
                 + "	FOREIGN KEY(product_id) REFERENCES products(product_id),\n"
                 + "	FOREIGN KEY(bill_id) REFERENCES products(bill_id)\n"
                 + ");";
+        try (Connection conn = DriverManager.getConnection(db);
+                Statement stmt = conn.createStatement()) {
+            // create a new table
+            stmt.execute(sql);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    
+    public static void createTriggerCostProducts(String fileName) {
+        
+    	String db = url + fileName;
+        
+        String sql = "" 
+                + "CREATE TRIGGER IF NOT EXISTS costs_of_products AFTER INSERT ON products \n"
+                + "	BEGIN\n"
+                + " INSERT INTO costs "
+                + "  (spent_day, product_id)"
+                + " VALUES "
+                + "  (date('now'),new.product_id);"
+                + " END;";
         try (Connection conn = DriverManager.getConnection(db);
                 Statement stmt = conn.createStatement()) {
             // create a new table

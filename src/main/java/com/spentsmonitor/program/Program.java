@@ -14,6 +14,7 @@ public class Program {
 	public static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 	
 	public static void main(String[] args) throws ParseException {
+		//testBD();
 		testDAO();
 		
 		/*
@@ -28,13 +29,14 @@ public class Program {
 	
 	public static void testDAO() throws ParseException  {
 		ProductDAO dao = new ProductDAOImp();
-		//dao.AllProducts();
-		//dao.removeProduct(1);
 		//dao.insertProduct(new Product("produto 1", 2.50, sdf.parse("14/04/2017"), 4));
+		dao.AllProducts();
+		//dao.removeProduct(1);
+		//dao.getProductID("produto 1.5");
 		//dao.AllProducts();
-		dao.selectProduct(1);
-		dao.updateProduct(1, new Product("produto 1.5", 2.50, sdf.parse("14/04/2017"), 4));
-		dao.selectProduct(1);
+		//dao.selectProduct(1);
+		//dao.updateProduct(1, new Product("produto 1.5", 2.50, sdf.parse("14/04/2017"), 4));
+		//dao.selectProduct(1);
 	}
 	
 	public static void testBD() {
@@ -43,7 +45,8 @@ public class Program {
 		DBCreator.createTableBills("teste.db");
 		DBCreator.createTableProducts("teste.db");
 		DBCreator.createTableValues("teste.db");
-		//DBConnector.connect("teste.db");
+		DBCreator.createTriggerCostProducts("teste.db");
+		DBConnector.connect("teste.db");
 		
 	}
 	
