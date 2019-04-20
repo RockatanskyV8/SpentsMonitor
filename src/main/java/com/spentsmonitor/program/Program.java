@@ -2,6 +2,7 @@ package com.spentsmonitor.program;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.sql.Date;
 
 import com.spentsmonitor.model.*;
@@ -30,13 +31,16 @@ public class Program {
 	public static void testDAO() throws ParseException  {
 		ProductDAO dao = new ProductDAOImp();
 		//dao.insertProduct(new Product("produto 1", 2.50, sdf.parse("14/04/2017"), 4));
-		dao.AllProducts();
 		//dao.removeProduct(1);
 		//dao.getProductID("produto 1.5");
 		//dao.AllProducts();
 		//dao.selectProduct(1);
 		//dao.updateProduct(1, new Product("produto 1.5", 2.50, sdf.parse("14/04/2017"), 4));
 		//dao.selectProduct(1);
+		List<Product> Products = dao.AllProducts();
+		for(Product p : Products) {
+			System.out.println(p.toString());
+		}
 	}
 	
 	public static void testBD() {
