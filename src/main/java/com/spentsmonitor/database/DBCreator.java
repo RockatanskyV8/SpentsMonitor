@@ -108,4 +108,26 @@ public class DBCreator {
             System.out.println(e.getMessage());
         }
     }
+    
+    public static void createTriggerCostBills(String fileName) {
+        
+    	String db = url + fileName;
+        
+        String sql = "" 
+                + "CREATE TRIGGER IF NOT EXISTS costs_of_bills AFTER INSERT ON bills \n"
+                + "	BEGIN\n"
+                + " INSERT INTO costs "
+                + "  (spent_day, bill_id)"
+                + " VALUES "
+                + "  (date('now'),new.bill_id);"
+                + " END;";
+        try (Connection conn = DriverManager.getConnection(db);
+                Statement stmt = conn.createStatement()) {
+            // create a new table
+            stmt.execute(sql);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    
 }

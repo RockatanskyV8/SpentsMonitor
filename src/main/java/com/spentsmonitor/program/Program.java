@@ -15,20 +15,30 @@ public class Program {
 	public static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 	
 	public static void main(String[] args) throws ParseException {
-		//testBD();
-		testDAO();
+		//testProductDAO();
+		testBillDAO();
 		
 		/*
 		try {
 			testBills();
-			testProduct();
+			//testProduct();
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
 		*/
 	}
 	
-	public static void testDAO() throws ParseException  {
+	public static void testBillDAO() throws ParseException {
+		BillDao dao = new BillDaoImp();
+		//dao.insertBill(new Bill("Conta 2", 55.60, BillType.BOLETO, sdf.parse("14/04/2017")));
+		//dao.removeBill(1);
+		for (Bill b : dao.AllBills()) {
+			System.out.println(b.toString());
+		}
+		//dao.selectBill(2);
+	}
+	
+	public static void testProductDAO() throws ParseException  {
 		ProductDAO dao = new ProductDAOImp();
 		//dao.insertProduct(new Product("produto 1", 2.50, sdf.parse("14/04/2017"), 4));
 		//dao.removeProduct(1);
@@ -36,11 +46,11 @@ public class Program {
 		//dao.AllProducts();
 		//dao.selectProduct(1);
 		//dao.updateProduct(1, new Product("produto 1.5", 2.50, sdf.parse("14/04/2017"), 4));
-		//dao.selectProduct(1);
-		List<Product> Products = dao.AllProducts();
+		System.out.println(dao.selectProduct(1).toString());
+		/*List<Product> Products = dao.AllProducts();
 		for(Product p : Products) {
 			System.out.println(p.toString());
-		}
+		}*/
 	}
 	
 	public static void testBD() {
@@ -50,6 +60,7 @@ public class Program {
 		DBCreator.createTableProducts("teste.db");
 		DBCreator.createTableValues("teste.db");
 		DBCreator.createTriggerCostProducts("teste.db");
+		DBCreator.createTriggerCostBills("teste.db");
 		DBConnector.connect("teste.db");
 		
 	}
@@ -72,13 +83,13 @@ public class Program {
 		
 		//SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		
-		Bill b1 = new Bill("Conta 1", 25.00,BillType.valueOf("CONTA"), sdf.parse("14/04/2017"));
-		Bill b2 = new Bill("Conta 2", 35.00,BillType.BOLETO, sdf.parse("13/01/2017"));
-		Bill b3 = new Bill("Conta 3", 35.00,BillType.valueOf(3), sdf.parse("15/02/2017"));
+		Bill b1 = new Bill("Conta 1", 25.00,1, sdf.parse("14/04/2017"));
+		Bill b2 = new Bill("Conta 2", 35.00,2, sdf.parse("13/01/2017"));
+		Bill b3 = new Bill("Conta 3", 35.00,3, sdf.parse("15/02/2017"));
 		
-		System.out.println(b1);
-		System.out.println(b2);
-		System.out.println(b3);
+		//System.out.println(b1);
+		System.out.println(b2.getBillType().getValue());
+		//System.out.println(b3);
 		
 	}
 

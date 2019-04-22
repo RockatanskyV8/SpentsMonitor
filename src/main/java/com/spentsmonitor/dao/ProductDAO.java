@@ -11,5 +11,5 @@ public interface ProductDAO {
 	void insertProduct(Product p);
 	void removeProduct(int id);
 	void updateProduct(int id, Product p);
-	void selectProduct(int id);
+	Product selectProduct(int id) throws ParseException;
 }

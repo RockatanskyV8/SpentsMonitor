@@ -1,8 +1,11 @@
 package com.spentsmonitor.model;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Product {
+	
+	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 	
 	private String name;
 	private Double price;
@@ -54,7 +57,7 @@ public class Product {
 
 	@Override
 	public String toString() {
-		return "Produto: " + name + ", Preço: " + price + ", Quantidade: " + quantity + ", Total: " + total();
+		return "Produto: " + name + ", Preço: " + price +  ", Data: " + sdf.format(buyDate) + ", Quantidade: " + quantity + ", Total: " + total();
 	}
 
 }

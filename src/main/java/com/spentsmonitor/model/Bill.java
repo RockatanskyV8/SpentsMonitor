@@ -10,10 +10,10 @@ public class Bill {
 	private Date paymentDate;
 	private BillType billType;
 	
-	public Bill(String name, Double value, BillType billtype, Date paymentDate) {
+	public Bill(String name, Double value, int type, Date paymentDate) {
 		this.name = name;
 		this.value = value;
-		this.billType = billtype;
+		this.billType = BillType.valueOf(type);
 		this.paymentDate = paymentDate;
 	}
 

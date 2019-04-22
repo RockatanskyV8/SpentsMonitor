@@ -19,9 +19,9 @@ public class ProductDAOImp implements ProductDAO{
 	@Override
 	public List<Product> AllProducts() throws ParseException{
 		// TODO Auto-generated method stub
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		List<Product> productsList = new ArrayList<Product>();
-		String sql = "SELECT products.product_id, name, cost, quantity, costs.bill_id, costs.spent_day "
+		String sql = "SELECT products.product_id, name, cost, quantity, costs.bill_id, strftime('%d/%m/%Y', costs.spent_day) "
 				   + "FROM products INNER JOIN costs ON products.product_id = costs.product_id";
 		try (Connection conn = DBConnector.connect("teste.db");
 	         Statement stmt  = conn.createStatement();
@@ -30,7 +30,7 @@ public class ProductDAOImp implements ProductDAO{
 	                productsList.add(
 	                new Product(rs.getString("name"),
 	                			rs.getDouble("cost"), 
-	                			sdf.parse(rs.getString("spent_day")), 
+	                			sdf.parse(rs.getString("strftime('%d/%m/%Y', costs.spent_day)")), 
 	                			rs.getInt("quantity")));
 	            }
 	        } catch (SQLException e) {
@@ -94,19 +94,26 @@ public class ProductDAOImp implements ProductDAO{
 	}
 
 	@Override
-	public void selectProduct(int id) {
+	public Product selectProduct(int id) throws ParseException {
 		// TODO Auto-generated method stub
-		String sql = "SELECT * FROM products WHERE product_id = ?";
+		Product p = null;
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		String sql = "SELECT products.product_id, name, cost, quantity, costs.bill_id, strftime('%d/%m/%Y', costs.spent_day) "
+				   + "FROM products INNER JOIN costs ON products.product_id = costs.product_id WHERE products.product_id = ?";
 		try (Connection conn = DBConnector.connect("teste.db");
 	             PreparedStatement pstmt  = conn.prepareStatement(sql)){
 	            pstmt.setInt(1,id);
 	            ResultSet rs  = pstmt.executeQuery();
 	            while (rs.next()) {
-	                System.out.println(rs.getInt("product_id") +  "\t" + rs.getString("name"));
+	                p = new Product(rs.getString("name"),
+                				rs.getDouble("cost"), 
+                				sdf.parse(rs.getString("strftime('%d/%m/%Y', costs.spent_day)")), 
+                				rs.getInt("quantity"));
 	            }
 	        } catch (SQLException e) {
 	            System.out.println(e.getMessage());
 	        }
+		return p;
 	}
 
 }
