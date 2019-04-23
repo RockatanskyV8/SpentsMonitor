@@ -10,5 +10,6 @@ public interface BillDao {
 	void insertBill(Bill b);
 	void removeBill(int id);
 	void updateBill(int id, Bill b);
-	void selectBill(int id);
+	Bill selectBill(int id) throws ParseException;
+	List<Bill> selectBillByName(String name) throws ParseException;
 }

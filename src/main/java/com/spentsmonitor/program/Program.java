@@ -15,9 +15,8 @@ public class Program {
 	public static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 	
 	public static void main(String[] args) throws ParseException {
-		//testProductDAO();
-		testBillDAO();
-		
+		testProductDAO();
+		//testBillDAO();
 		/*
 		try {
 			testBills();
@@ -32,25 +31,31 @@ public class Program {
 		BillDao dao = new BillDaoImp();
 		//dao.insertBill(new Bill("Conta 2", 55.60, BillType.BOLETO, sdf.parse("14/04/2017")));
 		//dao.removeBill(1);
+		System.out.println(dao.selectBill(2).toString());
+		for(Bill b : dao.selectBillByName("a 2")){
+			System.out.println(b.toString()); 
+		}
+		/*
 		for (Bill b : dao.AllBills()) {
 			System.out.println(b.toString());
-		}
+		}*/
 		//dao.selectBill(2);
 	}
 	
 	public static void testProductDAO() throws ParseException  {
 		ProductDAO dao = new ProductDAOImp();
-		//dao.insertProduct(new Product("produto 1", 2.50, sdf.parse("14/04/2017"), 4));
+		//dao.insertProduct(new Product("produto 2", 8.99, sdf.parse("18/06/2017"), 2));
 		//dao.removeProduct(1);
 		//dao.getProductID("produto 1.5");
 		//dao.AllProducts();
-		//dao.selectProduct(1);
-		//dao.updateProduct(1, new Product("produto 1.5", 2.50, sdf.parse("14/04/2017"), 4));
-		System.out.println(dao.selectProduct(1).toString());
-		/*List<Product> Products = dao.AllProducts();
-		for(Product p : Products) {
+		//System.out.println(dao.searchProduct("uto 2"));
+		//System.out.println(dao.selectProduct(1).toString());
+		//dao.updateProduct(1, new Product("produto 1.9", 2.99, sdf.parse("14/04/2017"), 8));
+		//System.out.println(dao.selectProduct(1).toString());
+		
+		for(Product p : dao.AllProducts()) {
 			System.out.println(p.toString());
-		}*/
+		}
 	}
 	
 	public static void testBD() {
