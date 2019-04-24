@@ -8,7 +8,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
-import java.sql.Date;
+import java.util.Date;
 import java.util.List;
 
 import com.spentsmonitor.model.Product;
@@ -16,7 +16,9 @@ import com.spentsmonitor.database.*;
 
 public class ProductDAOImp implements ProductDAO{
 
-	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+	private SimpleDateFormat sdf(String format) {
+		return new SimpleDateFormat(format);
+	}
 	
 	@Override
 	public List<Product> AllProducts() throws ParseException{
@@ -30,7 +32,7 @@ public class ProductDAOImp implements ProductDAO{
 	                productsList.add(
 	                new Product(rs.getString("name"),
 	                			rs.getDouble("cost"), 
-	                			sdf.parse(rs.getString("strftime('%d/%m/%Y', costs.spent_day)")), 
+	                			sdf("dd/MM/yyyy").parse(rs.getString("strftime('%d/%m/%Y', costs.spent_day)")), 
 	                			rs.getInt("quantity")));
 	            }
 	        } catch (SQLException e) {
@@ -49,15 +51,17 @@ public class ProductDAOImp implements ProductDAO{
             insertCost(p);
         } catch (SQLException e) {
             System.out.println("insert error: " +e.getMessage());
-        }
+        }        
 	}
 	
 	private void insertCost(Product p) {
-		String sql = "UPDATE costs SET quantity = ?, cost = ? WHERE bill_id IS NULL AND spent_day = date('now')";
+		String sql = "UPDATE costs SET quantity = ?, cost = ?, spent_day = ?"
+				   + " WHERE bill_id IS NULL AND spent_day = date('now') AND product_id = (SELECT MAX(product_id) FROM products)";
 		Connection conn = DBConnector.connect("teste.db");
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, p.getQuantity());
             pstmt.setDouble(2, p.getPrice());
+            pstmt.setString(3, sdf("yyyy-MM-dd").format(p.getBuyDate()));
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println("insert error: " + e.getMessage());
@@ -77,27 +81,29 @@ public class ProductDAOImp implements ProductDAO{
 	}
 
 	@Override
-	public void updateProduct(int id, Product p) {
+	public void updateProduct(int id, Date d, Product p) {
 		String sql = "UPDATE products SET name = ? WHERE product_id = ?";
 		try (Connection conn = DBConnector.connect("teste.db");
             PreparedStatement pstmt = conn.prepareStatement(sql)) {
 			pstmt.setString(1, p.getName());
             pstmt.setInt(2, id);
             pstmt.executeUpdate();
-            updateCosts(id, p);
+            updateCosts(id, d, p);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
 	}
 	
-	private void updateCosts(int id, Product p) {
-		String sql =  "UPDATE costs SET quantity = ?, cost = ?"
-					+ " WHERE product_id = ? AND spent_day = '2019-04-20' ";
+	private void updateCosts(int id, Date d, Product p) {
+		String sql =  "UPDATE costs SET quantity = ?, cost = ?, spent_day = ?"
+					+ " WHERE product_id = ? AND spent_day = ?";
 		try (Connection conn = DBConnector.connect("teste.db");
             PreparedStatement pstmt = conn.prepareStatement(sql)) {
 			pstmt.setInt(1, p.getQuantity());
             pstmt.setDouble(2, p.getPrice());
-            pstmt.setInt(3, id);
+            pstmt.setString(3, sdf("yyyy-MM-dd").format(p.getBuyDate()));
+            pstmt.setInt(4, id);
+            pstmt.setString(5, sdf("yyyy-MM-dd").format(d));
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -116,7 +122,7 @@ public class ProductDAOImp implements ProductDAO{
 	            while (rs.next()) {
 	                p = new Product(rs.getString("name"),
                 				rs.getDouble("cost"), 
-                				sdf.parse(rs.getString("strftime('%d/%m/%Y', costs.spent_day)")), 
+                				sdf("dd/MM/yyyy").parse(rs.getString("strftime('%d/%m/%Y', costs.spent_day)")), 
                 				rs.getInt("quantity"));
 	            }
 	        } catch (SQLException e) {
@@ -137,7 +143,7 @@ public class ProductDAOImp implements ProductDAO{
 	            while (rs.next()) {
 	                p = new Product(rs.getString("name"),
                 				rs.getDouble("cost"), 
-                				sdf.parse(rs.getString("strftime('%d/%m/%Y', costs.spent_day)")), 
+                				sdf("dd/MM/yyyy").parse(rs.getString("strftime('%d/%m/%Y', costs.spent_day)")), 
                 				rs.getInt("quantity"));
 	            }
 	        } catch (SQLException e) {
@@ -159,7 +165,7 @@ public class ProductDAOImp implements ProductDAO{
 	            	productsList.add(
 	                new Product(rs.getString("name"),
                 				rs.getDouble("cost"), 
-                				sdf.parse(rs.getString("strftime('%d/%m/%Y', costs.spent_day)")), 
+                				sdf("dd/MM/yyyy").parse(rs.getString("strftime('%d/%m/%Y', costs.spent_day)")), 
                 				rs.getInt("quantity"))
 	                );
 	            }

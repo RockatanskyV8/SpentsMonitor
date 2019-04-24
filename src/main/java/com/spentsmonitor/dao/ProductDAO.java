@@ -10,7 +10,7 @@ public interface ProductDAO {
 	List<Product> AllProducts() throws ParseException;
 	void insertProduct(Product p);
 	void removeProduct(int id);
-	void updateProduct(int id, Product p);
+	void updateProduct(int id, Date d, Product p);
 	Product selectProduct(int id) throws ParseException;
 	Product selectProductByName(String name) throws ParseException;
 	List<Product> searchProduct(String name) throws ParseException;

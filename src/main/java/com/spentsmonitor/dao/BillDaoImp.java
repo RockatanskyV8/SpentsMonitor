@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.spentsmonitor.database.DBConnector;
@@ -16,7 +17,9 @@ import com.spentsmonitor.model.enums.*;
 
 public class BillDaoImp implements BillDao {
 
-	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+	private SimpleDateFormat sdf(String format) {
+		return new SimpleDateFormat(format);
+	}
 	
 	@Override
 	public List<Bill> AllBills() throws ParseException {
@@ -33,7 +36,7 @@ public class BillDaoImp implements BillDao {
 	    	            			rs.getString("name"),
 	    	            			rs.getDouble("cost"),
 	    	            			rs.getInt("bill_type"),
-	    	            			sdf.parse((rs.getString("strftime('%d/%m/%Y', costs.spent_day)"))
+	    	            			sdf("dd/MM/yyyy").parse((rs.getString("strftime('%d/%m/%Y', costs.spent_day)"))
 	            					))
 	            			);
 	            }
@@ -59,10 +62,12 @@ public class BillDaoImp implements BillDao {
 	}
 	
 	private void insertCost(Bill b) {
-		String sql = "UPDATE costs SET cost = ? WHERE product_id IS NULL AND spent_day = date('now')";
+		String sql = "UPDATE costs SET cost = ?, spent_day = ?"
+				   + " WHERE product_id IS NULL AND spent_day = date('now') AND bill_id = (SELECT MAX(bill_id) FROM bills)";
 		Connection conn = DBConnector.connect("teste.db");
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setDouble(1, b.getValue());
+            pstmt.setString(2, sdf("yyyy-MM-dd").format(b.getPaymentDate()));
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println("insert error: " + e.getMessage());
@@ -83,9 +88,36 @@ public class BillDaoImp implements BillDao {
 	}
 
 	@Override
-	public void updateBill(int id, Bill b) {
-		// TODO Auto-generated method stub
+	public void updateBill(int id, Date d, Bill b) {
+		String sql = "UPDATE bills SET name = ?, bill_type = ? WHERE bill_id = ?";
+		try (Connection conn = DBConnector.connect("teste.db");
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+			pstmt.setString(1, b.getName());
+			pstmt.setInt(2, b.getBillType().getValue());
+            pstmt.setInt(3, id);
+            pstmt.executeUpdate();
+            updateCosts(id, d, b);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
 	}
+
+	private void updateCosts(int id, Date d, Bill b) {
+		String sql =  "UPDATE costs SET cost = ?, spent_day = ?"
+				    + " WHERE bill_id = ? AND spent_day = ?";
+		try (Connection conn = DBConnector.connect("teste.db");
+	        PreparedStatement pstmt = conn.prepareStatement(sql)) {
+	        pstmt.setDouble(1, b.getValue());
+	        pstmt.setString(2, sdf("yyyy-MM-dd").format(b.getPaymentDate()));
+	        pstmt.setInt(3, id);
+	        pstmt.setString(4, sdf("yyyy-MM-dd").format(d));
+	        pstmt.executeUpdate();
+	    } catch (SQLException e) {
+	        System.out.println(e.getMessage());
+	    }
+		
+	}
+	
 
 	@Override
 	public Bill selectBill(int id) throws ParseException {
@@ -104,7 +136,7 @@ public class BillDaoImp implements BillDao {
 	            				rs.getString("name"),
 	            				rs.getDouble("cost"),
 	            				rs.getInt("bill_type"), 
-	            				sdf.parse((rs.getString("strftime('%d/%m/%Y', costs.spent_day)")))
+	            				sdf("yyyy-MM-dd").parse((rs.getString("strftime('%d/%m/%Y', costs.spent_day)")))
 	            				);
 	            }
 	        } catch (SQLException e) {
@@ -129,7 +161,7 @@ public class BillDaoImp implements BillDao {
 	            				  rs.getString("name"),
 	            				  rs.getDouble("cost"),
 	            				  rs.getInt("bill_type"), 
-	            				  sdf.parse((rs.getString("strftime('%d/%m/%Y', costs.spent_day)")))
+	            				  sdf("yyyy-MM-dd").parse((rs.getString("strftime('%d/%m/%Y', costs.spent_day)")))
 	            				));
 	            }
 	        } catch (SQLException e) {
