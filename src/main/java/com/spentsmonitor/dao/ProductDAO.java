@@ -8,7 +8,7 @@ import com.spentsmonitor.model.Product;
 
 public interface ProductDAO {
 	List<Product> AllProducts() throws ParseException;
-	void insertProduct(Product p);
+	void insertProduct(Product p) throws ParseException;
 	void removeProduct(int id);
 	void updateProduct(int id, Date d, Product p);
 	Product selectProduct(int id) throws ParseException;

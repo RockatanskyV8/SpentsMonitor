@@ -42,7 +42,17 @@ public class ProductDAOImp implements ProductDAO{
 	}
 
 	@Override
-	public void insertProduct(Product p) {
+	public void insertProduct(Product p) throws ParseException {
+		Product aux = selectProductByName(p.getName());
+		
+		if(aux == null) {
+			newProduct(p);
+		} else {
+			newCost(p);
+		}
+	}
+	
+	private void newProduct(Product p) {
 		String sql = "INSERT INTO products (name) VALUES(?)";
 		Connection conn = DBConnector.connect("teste.db");
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -65,6 +75,22 @@ public class ProductDAOImp implements ProductDAO{
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println("insert error: " + e.getMessage());
+        }
+	}
+	
+	private void newCost(Product p) {
+		String sql = "INSERT INTO costs (quantity, cost, spent_day, product_id)"
+				   + " VALUES (?,?,?,(SELECT product_id FROM products WHERE name = ?))";
+		Connection conn = DBConnector.connect("teste.db");
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, p.getQuantity());
+            pstmt.setDouble(2, p.getPrice());
+            pstmt.setString(3, sdf("yyyy-MM-dd").format(p.getBuyDate()));
+            pstmt.setString(4, p.getName());
+            pstmt.executeUpdate();
+            insertCost(p);
+        } catch (SQLException e) {
+            System.out.println("insert error: " +e.getMessage());
         }
 	}
 

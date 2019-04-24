@@ -42,20 +42,12 @@ public class Program {
 	
 	public static void testProductDAO() throws ParseException  {
 		ProductDAO dao = new ProductDAOImp();
-		
+		dao.insertProduct(new Product("produto 9", 4.50, sdf.parse("14/04/2019"), 3));
 		for(Product p : dao.AllProducts()) {
 			System.out.println(p.toString());
 		}
+		
 	}
-	
-	/*
-	try {
-		//testBills();
-		testProduct();
-	} catch (ParseException e) {
-		e.printStackTrace();
-	}
-	*/
 	
 	public static void testProduct() throws ParseException  {
 		Product p1 = new Product("produto 1", 2.50, sdf.parse("14/04/2017"), 4);
