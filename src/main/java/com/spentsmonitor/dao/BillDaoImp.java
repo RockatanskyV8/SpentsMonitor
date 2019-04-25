@@ -13,6 +13,7 @@ import java.util.List;
 
 import com.spentsmonitor.database.DBConnector;
 import com.spentsmonitor.model.Bill;
+import com.spentsmonitor.model.Product;
 import com.spentsmonitor.model.enums.*;
 
 public class BillDaoImp implements BillDao {
@@ -47,8 +48,17 @@ public class BillDaoImp implements BillDao {
 	}
 
 	@Override
-	public void insertBill(Bill b) {
-		// TODO Auto-generated method stub
+	public void insertBill(Bill b)  throws ParseException{
+		Bill aux = selectBillByName(b.getName());
+		
+		if(aux == null) {
+			newBill(b);
+		} else {
+			newCost(b);
+		}
+	}
+	
+	private void newBill(Bill b) {
 		String sql = "INSERT INTO bills (name, bill_type) VALUES(?,?)";
 		Connection conn = DBConnector.connect("teste.db");
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -71,6 +81,20 @@ public class BillDaoImp implements BillDao {
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println("insert error: " + e.getMessage());
+        }
+	}
+	
+	private void newCost(Bill b) {
+		String sql = "INSERT INTO costs (cost, spent_day, bill_id)"
+				   + " VALUES (?,?,(SELECT bill_id FROM bills WHERE name = ?))";
+		Connection conn = DBConnector.connect("teste.db");
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setDouble(1, b.getValue());
+            pstmt.setString(2, sdf("yyyy-MM-dd").format(b.getPaymentDate()));
+            pstmt.setString(3, b.getName());
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("insert error: " +e.getMessage());
         }
 	}
 
@@ -145,7 +169,32 @@ public class BillDaoImp implements BillDao {
 		return b;
 	}
 	
-	public List<Bill> selectBillByName(String name) throws ParseException{
+	public Bill selectBillByName(String name) throws ParseException{
+		String sql ="SELECT bills.bill_id, name, bill_type, cost, costs.bill_id, strftime('%d/%m/%Y', costs.spent_day)"
+				   +" FROM bills INNER JOIN costs ON bills.bill_id = costs.bill_id"
+				   +" WHERE bills.name = ?";
+		
+		Bill bill = null;
+		
+		try (Connection conn = DBConnector.connect("teste.db");
+	         PreparedStatement pstmt  = conn.prepareStatement(sql)){
+	            pstmt.setString(1, '%' + name + '%');
+	            ResultSet rs  = pstmt.executeQuery();
+	            while (rs.next()) {
+	            	bill = new Bill(
+	            				  rs.getString("name"),
+	            				  rs.getDouble("cost"),
+	            				  rs.getInt("bill_type"), 
+	            				  sdf("yyyy-MM-dd").parse((rs.getString("strftime('%d/%m/%Y', costs.spent_day)")))
+	            				);
+	            }
+	        } catch (SQLException e) {
+	            System.out.println(e.getMessage());
+	        }
+		return bill;
+	}
+	
+	public List<Bill> searchBillByName(String name) throws ParseException{
 		String sql ="SELECT bills.bill_id, name, bill_type, cost, costs.bill_id, strftime('%d/%m/%Y', costs.spent_day)"
 				   +" FROM bills INNER JOIN costs ON bills.bill_id = costs.bill_id"
 				   +" WHERE bills.name LIKE ?";

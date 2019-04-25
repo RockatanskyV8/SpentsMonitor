@@ -15,7 +15,6 @@ public class Program {
 	public static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 	
 	public static void main(String[] args) throws ParseException {
-		//testBD();
 		testProductDAO();
 		testBillDAO();
 	}
@@ -34,7 +33,7 @@ public class Program {
 	
 	public static void testBillDAO() throws ParseException {
 		BillDao dao = new BillDaoImp();
-		
+		dao.insertBill(new Bill("Conta 12", 47.89,1, sdf.parse("14/11/2017")));
 		for (Bill b : dao.AllBills()) {
 			System.out.println(b.toString());
 		}
@@ -42,7 +41,7 @@ public class Program {
 	
 	public static void testProductDAO() throws ParseException  {
 		ProductDAO dao = new ProductDAOImp();
-		dao.insertProduct(new Product("produto 9", 4.50, sdf.parse("14/04/2019"), 3));
+		
 		for(Product p : dao.AllProducts()) {
 			System.out.println(p.toString());
 		}

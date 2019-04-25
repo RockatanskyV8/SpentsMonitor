@@ -88,7 +88,6 @@ public class ProductDAOImp implements ProductDAO{
             pstmt.setString(3, sdf("yyyy-MM-dd").format(p.getBuyDate()));
             pstmt.setString(4, p.getName());
             pstmt.executeUpdate();
-            insertCost(p);
         } catch (SQLException e) {
             System.out.println("insert error: " +e.getMessage());
         }
