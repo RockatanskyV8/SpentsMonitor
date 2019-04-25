@@ -17,9 +17,13 @@ import com.spentsmonitor.model.Product;
 import com.spentsmonitor.model.enums.*;
 
 public class BillDaoImp implements BillDao {
+	
+	private String bdName;
 
-	private SimpleDateFormat sdf(String format) {
-		return new SimpleDateFormat(format);
+	private SimpleDateFormat sdf(String format) { return new SimpleDateFormat(format); }
+	
+	public BillDaoImp(String bdName) {
+		this.bdName = bdName;
 	}
 	
 	@Override
@@ -28,7 +32,7 @@ public class BillDaoImp implements BillDao {
 		List<Bill> billsList = new ArrayList<Bill>();
 		String sql = "SELECT bills.bill_id, name, bill_type, cost, costs.bill_id, strftime('%d/%m/%Y', costs.spent_day) "
 				   + "FROM bills INNER JOIN costs ON bills.bill_id = costs.bill_id";
-		try (Connection conn = DBConnector.connect("teste.db");
+		try (Connection conn = DBConnector.connect(bdName);
 	         Statement stmt  = conn.createStatement();
 	         ResultSet rs    = stmt.executeQuery(sql)){
 	            while (rs.next()) {
@@ -60,7 +64,7 @@ public class BillDaoImp implements BillDao {
 	
 	private void newBill(Bill b) {
 		String sql = "INSERT INTO bills (name, bill_type) VALUES(?,?)";
-		Connection conn = DBConnector.connect("teste.db");
+		Connection conn = DBConnector.connect(bdName);
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, b.getName());
             pstmt.setInt(2, b.getBillType().getValue());
@@ -74,7 +78,7 @@ public class BillDaoImp implements BillDao {
 	private void insertCost(Bill b) {
 		String sql = "UPDATE costs SET cost = ?, spent_day = ?"
 				   + " WHERE product_id IS NULL AND spent_day = date('now') AND bill_id = (SELECT MAX(bill_id) FROM bills)";
-		Connection conn = DBConnector.connect("teste.db");
+		Connection conn = DBConnector.connect(bdName);
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setDouble(1, b.getValue());
             pstmt.setString(2, sdf("yyyy-MM-dd").format(b.getPaymentDate()));
@@ -87,7 +91,7 @@ public class BillDaoImp implements BillDao {
 	private void newCost(Bill b) {
 		String sql = "INSERT INTO costs (cost, spent_day, bill_id)"
 				   + " VALUES (?,?,(SELECT bill_id FROM bills WHERE name = ?))";
-		Connection conn = DBConnector.connect("teste.db");
+		Connection conn = DBConnector.connect(bdName);
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setDouble(1, b.getValue());
             pstmt.setString(2, sdf("yyyy-MM-dd").format(b.getPaymentDate()));
@@ -102,7 +106,7 @@ public class BillDaoImp implements BillDao {
 	public void removeBill(int id) {
 		// TODO Auto-generated method stub
 		String sql = "DELETE FROM bills WHERE bill_id = ?";
-		try (Connection conn = DBConnector.connect("teste.db");
+		try (Connection conn = DBConnector.connect(bdName);
             PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, id);
             pstmt.executeUpdate();
@@ -114,7 +118,7 @@ public class BillDaoImp implements BillDao {
 	@Override
 	public void updateBill(int id, Date d, Bill b) {
 		String sql = "UPDATE bills SET name = ?, bill_type = ? WHERE bill_id = ?";
-		try (Connection conn = DBConnector.connect("teste.db");
+		try (Connection conn = DBConnector.connect(bdName);
             PreparedStatement pstmt = conn.prepareStatement(sql)) {
 			pstmt.setString(1, b.getName());
 			pstmt.setInt(2, b.getBillType().getValue());
@@ -129,7 +133,7 @@ public class BillDaoImp implements BillDao {
 	private void updateCosts(int id, Date d, Bill b) {
 		String sql =  "UPDATE costs SET cost = ?, spent_day = ?"
 				    + " WHERE bill_id = ? AND spent_day = ?";
-		try (Connection conn = DBConnector.connect("teste.db");
+		try (Connection conn = DBConnector.connect(bdName);
 	        PreparedStatement pstmt = conn.prepareStatement(sql)) {
 	        pstmt.setDouble(1, b.getValue());
 	        pstmt.setString(2, sdf("yyyy-MM-dd").format(b.getPaymentDate()));
@@ -151,7 +155,7 @@ public class BillDaoImp implements BillDao {
 		
 		Bill b = null;
 		
-		try (Connection conn = DBConnector.connect("teste.db");
+		try (Connection conn = DBConnector.connect(bdName);
 	             PreparedStatement pstmt  = conn.prepareStatement(sql)){
 	            pstmt.setInt(1,id);
 	            ResultSet rs  = pstmt.executeQuery();
@@ -176,7 +180,7 @@ public class BillDaoImp implements BillDao {
 		
 		Bill bill = null;
 		
-		try (Connection conn = DBConnector.connect("teste.db");
+		try (Connection conn = DBConnector.connect(bdName);
 	         PreparedStatement pstmt  = conn.prepareStatement(sql)){
 	            pstmt.setString(1, '%' + name + '%');
 	            ResultSet rs  = pstmt.executeQuery();
@@ -201,7 +205,7 @@ public class BillDaoImp implements BillDao {
 		
 		List<Bill> billsList = new ArrayList<Bill>();
 		
-		try (Connection conn = DBConnector.connect("teste.db");
+		try (Connection conn = DBConnector.connect(bdName);
 	         PreparedStatement pstmt  = conn.prepareStatement(sql)){
 	            pstmt.setString(1, '%' + name + '%');
 	            ResultSet rs  = pstmt.executeQuery();

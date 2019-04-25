@@ -5,8 +5,6 @@ import java.util.Date;
 
 public class Product {
 	
-	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-	
 	private String name;
 	private Double price;
 	private Date buyDate;
@@ -57,6 +55,7 @@ public class Product {
 
 	@Override
 	public String toString() {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		return "Produto: " + name + ", Preço: " + price +  ", Data: " + sdf.format(buyDate) + ", Quantidade: " + quantity + ", Total: " + total();
 	}
 

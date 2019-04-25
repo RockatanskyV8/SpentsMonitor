@@ -16,16 +16,20 @@ import com.spentsmonitor.database.*;
 
 public class ProductDAOImp implements ProductDAO{
 
-	private SimpleDateFormat sdf(String format) {
-		return new SimpleDateFormat(format);
-	}
+	private String bdName;
 	
+	private SimpleDateFormat sdf(String format) { return new SimpleDateFormat(format); }
+	
+	public ProductDAOImp(String bdName) {
+		this.bdName = bdName;
+	}
+
 	@Override
 	public List<Product> AllProducts() throws ParseException{
 		List<Product> productsList = new ArrayList<Product>();
 		String sql = "SELECT products.product_id, name, cost, quantity, costs.bill_id, strftime('%d/%m/%Y', costs.spent_day) "
 				   + "FROM products INNER JOIN costs ON products.product_id = costs.product_id";
-		try (Connection conn = DBConnector.connect("teste.db");
+		try (Connection conn = DBConnector.connect(bdName);
 	         Statement stmt  = conn.createStatement();
 	         ResultSet rs    = stmt.executeQuery(sql)){
 	            while (rs.next()) {
@@ -54,7 +58,7 @@ public class ProductDAOImp implements ProductDAO{
 	
 	private void newProduct(Product p) {
 		String sql = "INSERT INTO products (name) VALUES(?)";
-		Connection conn = DBConnector.connect("teste.db");
+		Connection conn = DBConnector.connect(bdName);
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, p.getName());
             pstmt.executeUpdate();
@@ -67,7 +71,7 @@ public class ProductDAOImp implements ProductDAO{
 	private void insertCost(Product p) {
 		String sql = "UPDATE costs SET quantity = ?, cost = ?, spent_day = ?"
 				   + " WHERE bill_id IS NULL AND spent_day = date('now') AND product_id = (SELECT MAX(product_id) FROM products)";
-		Connection conn = DBConnector.connect("teste.db");
+		Connection conn = DBConnector.connect(bdName);
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, p.getQuantity());
             pstmt.setDouble(2, p.getPrice());
@@ -81,7 +85,7 @@ public class ProductDAOImp implements ProductDAO{
 	private void newCost(Product p) {
 		String sql = "INSERT INTO costs (quantity, cost, spent_day, product_id)"
 				   + " VALUES (?,?,?,(SELECT product_id FROM products WHERE name = ?))";
-		Connection conn = DBConnector.connect("teste.db");
+		Connection conn = DBConnector.connect(bdName);
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, p.getQuantity());
             pstmt.setDouble(2, p.getPrice());
@@ -96,7 +100,7 @@ public class ProductDAOImp implements ProductDAO{
 	@Override
 	public void removeProduct(int id) {
 		String sql = "DELETE FROM products WHERE product_id = ?";
-		try (Connection conn = DBConnector.connect("teste.db");
+		try (Connection conn = DBConnector.connect(bdName);
             PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, id);
             pstmt.executeUpdate();
@@ -108,7 +112,7 @@ public class ProductDAOImp implements ProductDAO{
 	@Override
 	public void updateProduct(int id, Date d, Product p) {
 		String sql = "UPDATE products SET name = ? WHERE product_id = ?";
-		try (Connection conn = DBConnector.connect("teste.db");
+		try (Connection conn = DBConnector.connect(bdName);
             PreparedStatement pstmt = conn.prepareStatement(sql)) {
 			pstmt.setString(1, p.getName());
             pstmt.setInt(2, id);
@@ -122,7 +126,7 @@ public class ProductDAOImp implements ProductDAO{
 	private void updateCosts(int id, Date d, Product p) {
 		String sql =  "UPDATE costs SET quantity = ?, cost = ?, spent_day = ?"
 					+ " WHERE product_id = ? AND spent_day = ?";
-		try (Connection conn = DBConnector.connect("teste.db");
+		try (Connection conn = DBConnector.connect(bdName);
             PreparedStatement pstmt = conn.prepareStatement(sql)) {
 			pstmt.setInt(1, p.getQuantity());
             pstmt.setDouble(2, p.getPrice());
@@ -140,7 +144,7 @@ public class ProductDAOImp implements ProductDAO{
 		Product p = null;
 		String sql = "SELECT products.product_id, name, cost, quantity, costs.bill_id, strftime('%d/%m/%Y', costs.spent_day) "
 				   + "FROM products INNER JOIN costs ON products.product_id = costs.product_id WHERE products.product_id = ?";
-		try (Connection conn = DBConnector.connect("teste.db");
+		try (Connection conn = DBConnector.connect(bdName);
 	             PreparedStatement pstmt  = conn.prepareStatement(sql)){
 	            pstmt.setInt(1,id);
 	            ResultSet rs  = pstmt.executeQuery();
@@ -161,7 +165,7 @@ public class ProductDAOImp implements ProductDAO{
 		Product p = null;
 		String sql = "SELECT products.product_id, name, cost, quantity, costs.bill_id, strftime('%d/%m/%Y', costs.spent_day) "
 				   + "FROM products INNER JOIN costs ON products.product_id = costs.product_id WHERE products.name = ?";
-		try (Connection conn = DBConnector.connect("teste.db");
+		try (Connection conn = DBConnector.connect(bdName);
 	         PreparedStatement pstmt  = conn.prepareStatement(sql)){
 	            pstmt.setString(1,name);
 	            ResultSet rs  = pstmt.executeQuery();
@@ -182,7 +186,7 @@ public class ProductDAOImp implements ProductDAO{
 		List<Product> productsList = new ArrayList<Product>();
 		String sql = "SELECT products.product_id, name, cost, quantity, costs.bill_id, strftime('%d/%m/%Y', costs.spent_day) "
 				   + "FROM products INNER JOIN costs ON products.product_id = costs.product_id WHERE products.name LIKE ?";
-		try (Connection conn = DBConnector.connect("teste.db");
+		try (Connection conn = DBConnector.connect(bdName);
 	         PreparedStatement pstmt  = conn.prepareStatement(sql)){
 	            pstmt.setString(1, '%' + name + '%');
 	            ResultSet rs  = pstmt.executeQuery();

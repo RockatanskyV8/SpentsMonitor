@@ -6,7 +6,8 @@ import java.util.Map;
 public enum BillType {
 	CONTA(1),
 	BOLETO(2),
-	FATURA(3);
+	FATURA(3),
+	SERVICE(4);
 	
 	private int value;
 	private static Map map = new HashMap<>();

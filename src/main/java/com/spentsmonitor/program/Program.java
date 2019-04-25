@@ -32,7 +32,8 @@ public class Program {
 	}
 	
 	public static void testBillDAO() throws ParseException {
-		BillDao dao = new BillDaoImp();
+		BillDao dao = new BillDaoImp("teste.db");
+		
 		dao.insertBill(new Bill("Conta 12", 47.89,1, sdf.parse("14/11/2017")));
 		for (Bill b : dao.AllBills()) {
 			System.out.println(b.toString());
@@ -40,7 +41,7 @@ public class Program {
 	}
 	
 	public static void testProductDAO() throws ParseException  {
-		ProductDAO dao = new ProductDAOImp();
+		ProductDAO dao = new ProductDAOImp("teste.db");
 		
 		for(Product p : dao.AllProducts()) {
 			System.out.println(p.toString());

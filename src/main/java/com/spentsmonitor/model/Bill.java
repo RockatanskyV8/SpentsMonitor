@@ -7,8 +7,6 @@ import com.spentsmonitor.model.enums.BillType;
 
 public class Bill {
 	
-	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-	
 	private String name;
 	private Double value;
 	private Date paymentDate;
@@ -55,6 +53,7 @@ public class Bill {
 	
 	@Override
 	public String toString() {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		return "Conta: " + name + ", Valor: " + value + ", Tipo: " + billType.name() + ", Data do pagamento: " + sdf.format(paymentDate);
 	}
 	
