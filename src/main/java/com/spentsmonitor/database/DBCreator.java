@@ -88,6 +88,47 @@ public class DBCreator {
         }
     }
     
+    public static void createTableIncome(String fileName) {
+        
+    	String db = url + fileName;
+        
+        String sql = "" 
+                + "CREATE TABLE IF NOT EXISTS income (\n"//Values Table
+                + "	income_id integer PRIMARY KEY,\n"
+                + " value real NOT NULL,\n"
+                + " source text NOT NULL,\n"
+                + " frequency_type integer NOT NULL,\n"
+                + " frequency_num integer NOT NULL\n"
+                + ");";
+        try (Connection conn = DriverManager.getConnection(db);
+                Statement stmt = conn.createStatement()) {
+            // create a new table
+            stmt.execute(sql);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    
+    public static void createTableIncomes(String fileName) {
+        
+    	String db = url + fileName;
+        
+        String sql = "" 
+                + "CREATE TABLE IF NOT EXISTS income_data (\n"//Values Table
+                + "	income_data_id integer PRIMARY KEY,\n"
+                + " income_day date NOT NULL,\n"
+                + " income_id integer NOT NULL\n,"
+                + " FOREIGN KEY(income_id) REFERENCES income(income_id)\n"
+                + ");";
+        try (Connection conn = DriverManager.getConnection(db);
+                Statement stmt = conn.createStatement()) {
+            // create a new table
+            stmt.execute(sql);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    
     public static void createTriggerCostProducts(String fileName) {
         
     	String db = url + fileName;

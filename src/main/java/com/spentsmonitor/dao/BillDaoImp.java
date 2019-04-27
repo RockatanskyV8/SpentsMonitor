@@ -13,8 +13,6 @@ import java.util.List;
 
 import com.spentsmonitor.database.DBConnector;
 import com.spentsmonitor.model.Bill;
-import com.spentsmonitor.model.Product;
-import com.spentsmonitor.model.enums.*;
 
 public class BillDaoImp implements BillDao {
 	

@@ -2,11 +2,8 @@ package com.spentsmonitor.program;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.List;
-import java.sql.Date;
 
 import com.spentsmonitor.model.*;
-import com.spentsmonitor.model.enums.BillType;
 import com.spentsmonitor.database.*;
 import com.spentsmonitor.dao.*;
 
@@ -15,7 +12,11 @@ public class Program {
 	public static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 	
 	public static void main(String[] args) throws ParseException {
+		//testBD();
+		testIncomeDAO();
+		System.out.println();
 		testProductDAO();
+		System.out.println();
 		testBillDAO();
 	}
 	
@@ -27,11 +28,22 @@ public class Program {
 		DBCreator.createTableValues("teste.db");
 		DBCreator.createTriggerCostProducts("teste.db");
 		DBCreator.createTriggerCostBills("teste.db");
+		DBCreator.createTableIncome("teste.db");
+		DBCreator.createTableIncomes("teste.db");
 		DBConnector.connect("teste.db");
 		
 	}
 	
+	public static void testIncomeDAO() throws ParseException {
+		IncomeDAO dao = new IncomeDAOImp("teste.db");
+		System.out.println("Income");
+		for(Income i : dao.AllIncomes()) {
+			System.out.println(i.toString());
+		}
+	}
+	
 	public static void testBillDAO() throws ParseException {
+		
 		BillDao dao = new BillDaoImp("teste.db");
 		System.out.println("Bill");
 		for (Bill b : dao.AllBills()) {
@@ -40,6 +52,7 @@ public class Program {
 	}
 	
 	public static void testProductDAO() throws ParseException  {
+		
 		ProductDAO dao = new ProductDAOImp("teste.db");
 		System.out.println("Products");
 		for(Product p : dao.AllProducts()) {
@@ -58,6 +71,11 @@ public class Program {
 		Bill b1 = new Bill("Conta 1", 25.00,1, sdf.parse("14/04/2017"));
 		Bill b2 = new Bill("Conta 2", 35.00,2, sdf.parse("13/01/2017"));
 		Bill b3 = new Bill("Conta 3", 35.00,3, sdf.parse("15/02/2017"));
+	}
+	
+	public static void testIncome() throws ParseException {
+		Income i1 = new Income(5000.60, "Salary", sdf.parse("14/04/2017"), 2, 1);
+		System.out.println(i1.toString());
 	}
 
 }
