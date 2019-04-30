@@ -25,7 +25,7 @@ public class BillDaoImp implements BillDao {
 	}
 	
 	@Override
-	public List<Bill> AllBills() throws ParseException {
+	public List<Bill> AllBills(){
 		// TODO Auto-generated method stub
 		List<Bill> billsList = new ArrayList<Bill>();
 		String sql = "SELECT bills.bill_id, name, bill_type, cost, costs.bill_id, strftime('%d/%m/%Y', costs.spent_day) "
@@ -45,12 +45,14 @@ public class BillDaoImp implements BillDao {
 	            }
 	        } catch (SQLException e) {
 	            System.out.println(e.getMessage());
-	        }
+	        } catch (ParseException e) {
+	        	System.out.println(e.getMessage());
+			}
 		return billsList;
 	}
 
 	@Override
-	public void insertBill(Bill b)  throws ParseException{
+	public void insertBill(Bill b){
 		Bill aux = selectBillByName(b.getName());
 		
 		if(aux == null) {
@@ -146,7 +148,7 @@ public class BillDaoImp implements BillDao {
 	
 
 	@Override
-	public Bill selectBill(int id) throws ParseException {
+	public Bill selectBill(int id) {
 		String sql ="SELECT bills.bill_id, name, bill_type, cost, costs.bill_id, strftime('%d/%m/%Y', costs.spent_day)"
 				   +" FROM bills INNER JOIN costs ON bills.bill_id = costs.bill_id"
 				   +" WHERE bills.bill_id = ?";
@@ -167,11 +169,13 @@ public class BillDaoImp implements BillDao {
 	            }
 	        } catch (SQLException e) {
 	            System.out.println(e.getMessage());
-	        }
+	        } catch (ParseException e) {
+	        	System.out.println(e.getMessage());
+			}
 		return b;
 	}
 	
-	public Bill selectBillByName(String name) throws ParseException{
+	public Bill selectBillByName(String name){
 		String sql ="SELECT bills.bill_id, name, bill_type, cost, costs.bill_id, strftime('%d/%m/%Y', costs.spent_day)"
 				   +" FROM bills INNER JOIN costs ON bills.bill_id = costs.bill_id"
 				   +" WHERE bills.name = ?";
@@ -192,11 +196,13 @@ public class BillDaoImp implements BillDao {
 	            }
 	        } catch (SQLException e) {
 	            System.out.println(e.getMessage());
-	        }
+	        } catch (ParseException e) {
+	        	System.out.println(e.getMessage());
+			}
 		return bill;
 	}
 	
-	public List<Bill> searchBillByName(String name) throws ParseException{
+	public List<Bill> searchBillByName(String name){
 		String sql ="SELECT bills.bill_id, name, bill_type, cost, costs.bill_id, strftime('%d/%m/%Y', costs.spent_day)"
 				   +" FROM bills INNER JOIN costs ON bills.bill_id = costs.bill_id"
 				   +" WHERE bills.name LIKE ?";
@@ -217,7 +223,9 @@ public class BillDaoImp implements BillDao {
 	            }
 	        } catch (SQLException e) {
 	            System.out.println(e.getMessage());
-	        }
+	        } catch (ParseException e) {
+	        	System.out.println(e.getMessage());
+			}
 		return billsList;
 	}
 

@@ -25,7 +25,7 @@ public class ProductDAOImp implements ProductDAO{
 	}
 
 	@Override
-	public List<Product> AllProducts() throws ParseException{
+	public List<Product> AllProducts(){
 		List<Product> productsList = new ArrayList<Product>();
 		String sql = "SELECT products.product_id, name, cost, quantity, costs.bill_id, strftime('%d/%m/%Y', costs.spent_day) "
 				   + "FROM products INNER JOIN costs ON products.product_id = costs.product_id";
@@ -41,12 +41,14 @@ public class ProductDAOImp implements ProductDAO{
 	            }
 	        } catch (SQLException e) {
 	            System.out.println(e.getMessage());
-	        }
+	        } catch (ParseException e) {
+				System.out.println(e.getMessage());
+			}
 		return productsList;
 	}
 
 	@Override
-	public void insertProduct(Product p) throws ParseException {
+	public void insertProduct(Product p) {
 		Product aux = selectProductByName(p.getName());
 		
 		if(aux == null) {
@@ -140,7 +142,7 @@ public class ProductDAOImp implements ProductDAO{
 	}
 
 	@Override
-	public Product selectProduct(int id) throws ParseException {
+	public Product selectProduct(int id) {
 		Product p = null;
 		String sql = "SELECT products.product_id, name, cost, quantity, costs.bill_id, strftime('%d/%m/%Y', costs.spent_day) "
 				   + "FROM products INNER JOIN costs ON products.product_id = costs.product_id WHERE products.product_id = ?";
@@ -156,12 +158,14 @@ public class ProductDAOImp implements ProductDAO{
 	            }
 	        } catch (SQLException e) {
 	            System.out.println(e.getMessage());
-	        }
+	        } catch (ParseException e) {
+	        	System.out.println(e.getMessage());
+			}
 		return p;
 	}
 	
 	@Override
-	public Product selectProductByName(String name) throws ParseException {
+	public Product selectProductByName(String name) {
 		Product p = null;
 		String sql = "SELECT products.product_id, name, cost, quantity, costs.bill_id, strftime('%d/%m/%Y', costs.spent_day) "
 				   + "FROM products INNER JOIN costs ON products.product_id = costs.product_id WHERE products.name = ?";
@@ -177,12 +181,14 @@ public class ProductDAOImp implements ProductDAO{
 	            }
 	        } catch (SQLException e) {
 	            System.out.println(e.getMessage());
-	        }
+	        } catch (ParseException e) {
+	        	System.out.println(e.getMessage());
+			}
 		return p;
 	}
 	
 	@Override
-	public List<Product> searchProduct(String name) throws ParseException {
+	public List<Product> searchProduct(String name) {
 		List<Product> productsList = new ArrayList<Product>();
 		String sql = "SELECT products.product_id, name, cost, quantity, costs.bill_id, strftime('%d/%m/%Y', costs.spent_day) "
 				   + "FROM products INNER JOIN costs ON products.product_id = costs.product_id WHERE products.name LIKE ?";
@@ -200,7 +206,9 @@ public class ProductDAOImp implements ProductDAO{
 	            }
 	        } catch (SQLException e) {
 	            System.out.println(e.getMessage());
-	        }
+	        } catch (ParseException e) {
+	        	System.out.println(e.getMessage());
+			}
 		return productsList;
 	}
 }

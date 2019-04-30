@@ -24,7 +24,7 @@ public class IncomeDAOImp implements IncomeDAO{
 	}
 
 	@Override
-	public List<Income> AllIncomes() throws ParseException {
+	public List<Income> AllIncomes() {
 		
 		String sql = "SELECT value, source, strftime('%d/%m/%Y', income_data.income_day), frequency_type, frequency_num FROM income"
 					+" INNER JOIN income_data"
@@ -46,12 +46,15 @@ public class IncomeDAOImp implements IncomeDAO{
 		            }
 		        } catch (SQLException e) {
 		            System.out.println(e.getMessage());
-		        }
+		        } catch (ParseException e) {
+		        	System.out.println(e.getMessage());;
+				}
+		
 		return incomeList;
 	}
 
 	@Override
-	public void insertIncome(Income i) throws ParseException {
+	public void insertIncome(Income i) {
 		Income aux = selectIncomeBySource(i.getSource());
 		
 		if(aux == null) {
@@ -136,7 +139,7 @@ public class IncomeDAOImp implements IncomeDAO{
 	}
 
 	@Override
-	public Income selectIncomeBySource(String source) throws ParseException {
+	public Income selectIncomeBySource(String source){
 		
 		String sql = "SELECT value, source, income_data.income_day, frequency_type, frequency_num FROM income"
 				+" INNER JOIN income_data"
@@ -157,7 +160,10 @@ public class IncomeDAOImp implements IncomeDAO{
 	            }
 	        } catch (SQLException e) {
 	            System.out.println(e.getMessage());
-	        }
+	        } catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		return in;
 	}
 
