@@ -8,12 +8,10 @@ import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import com.spentsmonitor.database.DBConnector;
 import com.spentsmonitor.model.Income;
-import com.spentsmonitor.model.Product;
 
 public class IncomeDAOImp implements IncomeDAO{
 	

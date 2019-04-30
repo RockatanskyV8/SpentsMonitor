@@ -1,5 +1,6 @@
 package com.spentsmonitor.program;
 
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -11,7 +12,7 @@ public class Program {
 
 	public static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 	
-	public static void main(String[] args) throws ParseException {
+	public static void main(String[] args) throws ParseException, SQLException {
 		//testBD();
 		testIncomeDAO();
 		System.out.println();
@@ -34,7 +35,7 @@ public class Program {
 		
 	}
 	
-	public static void testIncomeDAO() throws ParseException {
+	public static void testIncomeDAO() throws ParseException, SQLException {
 		IncomeDAO dao = new IncomeDAOImp("teste.db");
 		System.out.println("Income");
 		for(Income i : dao.AllIncomes()) {
@@ -42,8 +43,7 @@ public class Program {
 		}
 	}
 	
-	public static void testBillDAO() throws ParseException {
-		
+	public static void testBillDAO() throws ParseException, SQLException {
 		BillDao dao = new BillDaoImp("teste.db");
 		System.out.println("Bill");
 		for (Bill b : dao.AllBills()) {
@@ -51,8 +51,7 @@ public class Program {
 		}
 	}
 	
-	public static void testProductDAO() throws ParseException  {
-		
+	public static void testProductDAO() throws ParseException, SQLException  {
 		ProductDAO dao = new ProductDAOImp("teste.db");
 		System.out.println("Products");
 		for(Product p : dao.AllProducts()) {
