@@ -13,6 +13,7 @@ import java.util.List;
 
 import com.spentsmonitor.database.DBConnector;
 import com.spentsmonitor.model.Bill;
+import com.spentsmonitor.exceptions.*;;
 
 public class BillDaoImp implements BillDao {
 	
@@ -44,9 +45,9 @@ public class BillDaoImp implements BillDao {
 	            			);
 	            }
 	        } catch (SQLException e) {
-	            System.out.println(e.getMessage());
+	            throw new DBException("List error: " + e.getMessage());
 	        } catch (ParseException e) {
-	        	System.out.println(e.getMessage());
+	        	throw new DateException("Date format error: " + e.getMessage());
 			}
 		return billsList;
 	}
@@ -71,7 +72,7 @@ public class BillDaoImp implements BillDao {
             pstmt.executeUpdate();
             insertCost(b);
         } catch (SQLException e) {
-            System.out.println("insert error: " +e.getMessage());
+        	throw new DBException("Insert error: " + e.getMessage());
         }
 	}
 	
@@ -84,7 +85,7 @@ public class BillDaoImp implements BillDao {
             pstmt.setString(2, sdf("yyyy-MM-dd").format(b.getPaymentDate()));
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("insert error: " + e.getMessage());
+        	throw new DBException("Insert error: " + e.getMessage());
         }
 	}
 	
@@ -98,7 +99,7 @@ public class BillDaoImp implements BillDao {
             pstmt.setString(3, b.getName());
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("insert error: " +e.getMessage());
+        	throw new DBException("Insert error: " + e.getMessage());
         }
 	}
 
@@ -111,7 +112,7 @@ public class BillDaoImp implements BillDao {
             pstmt.setInt(1, id);
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+        	throw new DBException("Delete error: " + e.getMessage());
         }
 	}
 
@@ -126,7 +127,7 @@ public class BillDaoImp implements BillDao {
             pstmt.executeUpdate();
             updateCosts(id, d, b);
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+        	throw new DBException("Alteration error: " + e.getMessage());
         }
 	}
 
@@ -141,7 +142,7 @@ public class BillDaoImp implements BillDao {
 	        pstmt.setString(4, sdf("yyyy-MM-dd").format(d));
 	        pstmt.executeUpdate();
 	    } catch (SQLException e) {
-	        System.out.println(e.getMessage());
+	    	throw new DBException("Alteration error: " + e.getMessage());
 	    }
 		
 	}
@@ -168,9 +169,9 @@ public class BillDaoImp implements BillDao {
 	            				);
 	            }
 	        } catch (SQLException e) {
-	            System.out.println(e.getMessage());
+	        	throw new DBException("Return error: " + e.getMessage());
 	        } catch (ParseException e) {
-	        	System.out.println(e.getMessage());
+	        	throw new DateException("Date format error: " + e.getMessage());
 			}
 		return b;
 	}
@@ -195,9 +196,9 @@ public class BillDaoImp implements BillDao {
 	            				);
 	            }
 	        } catch (SQLException e) {
-	            System.out.println(e.getMessage());
+	        	throw new DBException("Return error: " + e.getMessage());
 	        } catch (ParseException e) {
-	        	System.out.println(e.getMessage());
+	        	throw new DateException("Date format error: " + e.getMessage());
 			}
 		return bill;
 	}
@@ -222,9 +223,9 @@ public class BillDaoImp implements BillDao {
 	            				));
 	            }
 	        } catch (SQLException e) {
-	            System.out.println(e.getMessage());
+	        	throw new DBException("Search error: " + e.getMessage());
 	        } catch (ParseException e) {
-	        	System.out.println(e.getMessage());
+	        	throw new DateException("Date format error: " + e.getMessage());
 			}
 		return billsList;
 	}

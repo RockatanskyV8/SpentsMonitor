@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.spentsmonitor.database.DBConnector;
+import com.spentsmonitor.exceptions.DBException;
+import com.spentsmonitor.exceptions.DateException;
 import com.spentsmonitor.model.Income;
 
 public class IncomeDAOImp implements IncomeDAO{
@@ -45,9 +47,9 @@ public class IncomeDAOImp implements IncomeDAO{
 		                );
 		            }
 		        } catch (SQLException e) {
-		            System.out.println(e.getMessage());
+		        	throw new DBException("List error: " + e.getMessage());
 		        } catch (ParseException e) {
-		        	System.out.println(e.getMessage());;
+		        	throw new DateException("Date format error: " + e.getMessage());
 				}
 		
 		return incomeList;
@@ -78,7 +80,7 @@ public class IncomeDAOImp implements IncomeDAO{
             pstmt.executeUpdate();
             insertIncomeDate(i);
         } catch (SQLException e) {
-            System.out.println("insert error: " +e.getMessage());
+        	throw new DBException("Insert error: " + e.getMessage());
         } 
 	}
 	
@@ -92,7 +94,7 @@ public class IncomeDAOImp implements IncomeDAO{
 	        pstmt.setString(3, i.getSource());
 	        pstmt.executeUpdate();
 	    } catch (SQLException e) {
-	        System.out.println("insert error: " +e.getMessage());
+	    	throw new DBException("Insert error: " + e.getMessage());
 	    } 
 	}
 
@@ -104,7 +106,7 @@ public class IncomeDAOImp implements IncomeDAO{
 	        pstmt.setInt(1, id);
 	        pstmt.executeUpdate();
 	    } catch (SQLException e) {
-	        System.out.println("insert error: " +e.getMessage());
+	    	throw new DBException("Delete error: " + e.getMessage());
 	    } 
 	}
 
@@ -118,7 +120,7 @@ public class IncomeDAOImp implements IncomeDAO{
 	        pstmt.executeUpdate();
 	        updatedIncome(i);
 	    } catch (SQLException e) {
-	        System.out.println(e.getMessage());
+	    	throw new DBException("Alteration error: " + e.getMessage());
 	    }
 	}
 	
@@ -134,7 +136,7 @@ public class IncomeDAOImp implements IncomeDAO{
 	        pstmt.executeUpdate();
 	        insertIncomeDate(i);
 	    } catch (SQLException e) {
-	        System.out.println("insert error: " +e.getMessage());
+	    	throw new DBException("Alteration error: " + e.getMessage());
 	    }
 	}
 
@@ -159,10 +161,9 @@ public class IncomeDAOImp implements IncomeDAO{
 	                		   rs.getInt("frequency_num"));
 	            }
 	        } catch (SQLException e) {
-	            System.out.println(e.getMessage());
+	        	throw new DBException("Return error: " + e.getMessage());
 	        } catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+	        	throw new DateException("Date format error: " + e.getMessage());
 			}
 		return in;
 	}

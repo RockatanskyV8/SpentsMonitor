@@ -13,6 +13,8 @@ import java.util.List;
 
 import com.spentsmonitor.model.Product;
 import com.spentsmonitor.database.*;
+import com.spentsmonitor.exceptions.DBException;
+import com.spentsmonitor.exceptions.DateException;
 
 public class ProductDAOImp implements ProductDAO{
 
@@ -40,9 +42,9 @@ public class ProductDAOImp implements ProductDAO{
 	                			rs.getInt("quantity")));
 	            }
 	        } catch (SQLException e) {
-	            System.out.println(e.getMessage());
+	        	throw new DBException("List error: " + e.getMessage());
 	        } catch (ParseException e) {
-				System.out.println(e.getMessage());
+	        	throw new DateException("Date format error: " + e.getMessage());
 			}
 		return productsList;
 	}
@@ -66,7 +68,7 @@ public class ProductDAOImp implements ProductDAO{
             pstmt.executeUpdate();
             insertCost(p);
         } catch (SQLException e) {
-            System.out.println("insert error: " +e.getMessage());
+        	throw new DBException("Insert error: " + e.getMessage());
         }        
 	}
 	
@@ -80,7 +82,7 @@ public class ProductDAOImp implements ProductDAO{
             pstmt.setString(3, sdf("yyyy-MM-dd").format(p.getBuyDate()));
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("insert error: " + e.getMessage());
+        	throw new DBException("Insert error: " + e.getMessage());
         }
 	}
 	
@@ -95,7 +97,7 @@ public class ProductDAOImp implements ProductDAO{
             pstmt.setString(4, p.getName());
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("insert error: " +e.getMessage());
+        	throw new DBException("Insert error: " + e.getMessage());
         }
 	}
 
@@ -107,7 +109,7 @@ public class ProductDAOImp implements ProductDAO{
             pstmt.setInt(1, id);
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+        	throw new DBException("Delete error: " + e.getMessage());
         }
 	}
 
@@ -121,7 +123,7 @@ public class ProductDAOImp implements ProductDAO{
             pstmt.executeUpdate();
             updateCosts(id, d, p);
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+        	throw new DBException("Alteration error: " + e.getMessage());
         }
 	}
 	
@@ -137,7 +139,7 @@ public class ProductDAOImp implements ProductDAO{
             pstmt.setString(5, sdf("yyyy-MM-dd").format(d));
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+        	throw new DBException("Alteration error: " + e.getMessage());
         }
 	}
 
@@ -157,9 +159,9 @@ public class ProductDAOImp implements ProductDAO{
                 				rs.getInt("quantity"));
 	            }
 	        } catch (SQLException e) {
-	            System.out.println(e.getMessage());
+	        	throw new DBException("Return error: " + e.getMessage());
 	        } catch (ParseException e) {
-	        	System.out.println(e.getMessage());
+	        	throw new DateException("Date format error: " + e.getMessage());
 			}
 		return p;
 	}
@@ -180,9 +182,9 @@ public class ProductDAOImp implements ProductDAO{
                 				rs.getInt("quantity"));
 	            }
 	        } catch (SQLException e) {
-	            System.out.println(e.getMessage());
+	        	throw new DBException("Return error: " + e.getMessage());
 	        } catch (ParseException e) {
-	        	System.out.println(e.getMessage());
+	        	throw new DateException("Date format error: " + e.getMessage());
 			}
 		return p;
 	}
@@ -205,9 +207,9 @@ public class ProductDAOImp implements ProductDAO{
 	                );
 	            }
 	        } catch (SQLException e) {
-	            System.out.println(e.getMessage());
+	        	throw new DBException("Return error: " + e.getMessage());
 	        } catch (ParseException e) {
-	        	System.out.println(e.getMessage());
+	        	throw new DateException("Date format error: " + e.getMessage());
 			}
 		return productsList;
 	}
