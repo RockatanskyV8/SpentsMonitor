@@ -73,6 +73,7 @@ public class DBCreator {
                 + " quantity integer DEFAULT 1,\n"
                 + "	cost real,\n"
                 + "	spent_day date NOT NULL,\n"
+                + " profit real DEFAULT 0.0,\n"
                 + "	product_id integer,\n"
                 + "	bill_id integer,\n"
                 + "	FOREIGN KEY(product_id) REFERENCES products(product_id),\n"

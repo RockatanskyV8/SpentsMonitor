@@ -29,7 +29,7 @@ public class ProductDAOImp implements ProductDAO{
 	@Override
 	public List<Product> AllProducts(){
 		List<Product> productsList = new ArrayList<Product>();
-		String sql = "SELECT products.product_id, name, cost, quantity, costs.bill_id, strftime('%d/%m/%Y', costs.spent_day) "
+		String sql = "SELECT products.product_id, name, cost, quantity, costs.profit, strftime('%d/%m/%Y', costs.spent_day) "
 				   + "FROM products INNER JOIN costs ON products.product_id = costs.product_id";
 		try (Connection conn = DBConnector.connect(bdName);
 	         Statement stmt  = conn.createStatement();
@@ -39,7 +39,9 @@ public class ProductDAOImp implements ProductDAO{
 	                new Product(rs.getString("name"),
 	                			rs.getDouble("cost"), 
 	                			sdf("dd/MM/yyyy").parse(rs.getString("strftime('%d/%m/%Y', costs.spent_day)")), 
-	                			rs.getInt("quantity")));
+	                			rs.getInt("quantity"),
+	                			rs.getDouble("costs.profit")
+	                			));
 	            }
 	        } catch (SQLException e) {
 	        	throw new DBException("List error: " + e.getMessage());
@@ -73,13 +75,14 @@ public class ProductDAOImp implements ProductDAO{
 	}
 	
 	private void insertCost(Product p) {
-		String sql = "UPDATE costs SET quantity = ?, cost = ?, spent_day = ?"
+		String sql = "UPDATE costs SET quantity = ?, cost = ?, spent_day = ?, profit = ?"
 				   + " WHERE bill_id IS NULL AND spent_day = date('now') AND product_id = (SELECT MAX(product_id) FROM products)";
 		Connection conn = DBConnector.connect(bdName);
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, p.getQuantity());
             pstmt.setDouble(2, p.getPrice());
             pstmt.setString(3, sdf("yyyy-MM-dd").format(p.getBuyDate()));
+            pstmt.setDouble(4, p.getProfit());
             pstmt.executeUpdate();
         } catch (SQLException e) {
         	throw new DBException("Insert error: " + e.getMessage());
@@ -87,14 +90,15 @@ public class ProductDAOImp implements ProductDAO{
 	}
 	
 	private void newCost(Product p) {
-		String sql = "INSERT INTO costs (quantity, cost, spent_day, product_id)"
-				   + " VALUES (?,?,?,(SELECT product_id FROM products WHERE name = ?))";
+		String sql = "INSERT INTO costs (quantity, cost, spent_day, profit, product_id)"
+				   + " VALUES (?,?,?,?,(SELECT product_id FROM products WHERE name = ?))";
 		Connection conn = DBConnector.connect(bdName);
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, p.getQuantity());
             pstmt.setDouble(2, p.getPrice());
             pstmt.setString(3, sdf("yyyy-MM-dd").format(p.getBuyDate()));
-            pstmt.setString(4, p.getName());
+            pstmt.setDouble(4, p.getProfit());
+            pstmt.setString(5, p.getName());
             pstmt.executeUpdate();
         } catch (SQLException e) {
         	throw new DBException("Insert error: " + e.getMessage());
@@ -146,7 +150,7 @@ public class ProductDAOImp implements ProductDAO{
 	@Override
 	public Product selectProduct(int id) {
 		Product p = null;
-		String sql = "SELECT products.product_id, name, cost, quantity, costs.bill_id, strftime('%d/%m/%Y', costs.spent_day) "
+		String sql = "SELECT products.product_id, name, cost, quantity, costs.profit, strftime('%d/%m/%Y', costs.spent_day) "
 				   + "FROM products INNER JOIN costs ON products.product_id = costs.product_id WHERE products.product_id = ?";
 		try (Connection conn = DBConnector.connect(bdName);
 	             PreparedStatement pstmt  = conn.prepareStatement(sql)){
@@ -156,7 +160,8 @@ public class ProductDAOImp implements ProductDAO{
 	                p = new Product(rs.getString("name"),
                 				rs.getDouble("cost"), 
                 				sdf("dd/MM/yyyy").parse(rs.getString("strftime('%d/%m/%Y', costs.spent_day)")), 
-                				rs.getInt("quantity"));
+                				rs.getInt("quantity"),
+                				rs.getDouble("costs.profit"));
 	            }
 	        } catch (SQLException e) {
 	        	throw new DBException("Return error: " + e.getMessage());
@@ -169,7 +174,7 @@ public class ProductDAOImp implements ProductDAO{
 	@Override
 	public Product selectProductByName(String name) {
 		Product p = null;
-		String sql = "SELECT products.product_id, name, cost, quantity, costs.bill_id, strftime('%d/%m/%Y', costs.spent_day) "
+		String sql = "SELECT products.product_id, name, cost, quantity, costs.profit, strftime('%d/%m/%Y', costs.spent_day) "
 				   + "FROM products INNER JOIN costs ON products.product_id = costs.product_id WHERE products.name = ?";
 		try (Connection conn = DBConnector.connect(bdName);
 	         PreparedStatement pstmt  = conn.prepareStatement(sql)){
@@ -179,7 +184,8 @@ public class ProductDAOImp implements ProductDAO{
 	                p = new Product(rs.getString("name"),
                 				rs.getDouble("cost"), 
                 				sdf("dd/MM/yyyy").parse(rs.getString("strftime('%d/%m/%Y', costs.spent_day)")), 
-                				rs.getInt("quantity"));
+                				rs.getInt("quantity"),
+                				rs.getDouble("costs.profit"));
 	            }
 	        } catch (SQLException e) {
 	        	throw new DBException("Return error: " + e.getMessage());
@@ -192,7 +198,7 @@ public class ProductDAOImp implements ProductDAO{
 	@Override
 	public List<Product> searchProduct(String name) {
 		List<Product> productsList = new ArrayList<Product>();
-		String sql = "SELECT products.product_id, name, cost, quantity, costs.bill_id, strftime('%d/%m/%Y', costs.spent_day) "
+		String sql = "SELECT products.product_id, name, cost, quantity, costs.profit, strftime('%d/%m/%Y', costs.spent_day) "
 				   + "FROM products INNER JOIN costs ON products.product_id = costs.product_id WHERE products.name LIKE ?";
 		try (Connection conn = DBConnector.connect(bdName);
 	         PreparedStatement pstmt  = conn.prepareStatement(sql)){
@@ -203,7 +209,8 @@ public class ProductDAOImp implements ProductDAO{
 	                new Product(rs.getString("name"),
                 				rs.getDouble("cost"), 
                 				sdf("dd/MM/yyyy").parse(rs.getString("strftime('%d/%m/%Y', costs.spent_day)")), 
-                				rs.getInt("quantity"))
+                				rs.getInt("quantity"),
+                				rs.getDouble("costs.profit"))
 	                );
 	            }
 	        } catch (SQLException e) {

@@ -9,12 +9,14 @@ public class Product {
 	private Double price;
 	private Date buyDate;
 	private Integer quantity;
+	private Double profit;
 	
-	public Product(String name, Double price, Date buyDate,Integer quantity) {
+	public Product(String name, Double price, Date buyDate, Integer quantity, Double profit) {
 		this.name = name;
 		this.price = price;
 		this.buyDate = buyDate;
 		this.quantity = quantity;
+		this.profit = profit;
 	}
 
 	public String getName() {
@@ -49,6 +51,14 @@ public class Product {
 		this.buyDate = buyDate;
 	}
 
+	public Double getProfit() {
+		return profit;
+	}
+
+	public void setProfit(Double profit) {
+		this.profit = profit;
+	}
+
 	public double total() {
 		return price * quantity;
 	}
@@ -56,7 +66,12 @@ public class Product {
 	@Override
 	public String toString() {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		return "Produto: " + name + ", Preço: " + price +  ", Data: " + sdf.format(buyDate) + ", Quantidade: " + quantity + ", Total: " + total();
+		return "Produto: " + name + 
+			   ", Preço: " + price +
+			   ", Data: " + sdf.format(buyDate) +
+			   ", Quantidade: " + quantity +
+			   ", Total: " + total() +
+			   ", Venda: " + profit;
 	}
 
 }
