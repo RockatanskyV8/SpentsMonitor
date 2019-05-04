@@ -1,16 +1,18 @@
 package com.spentsmonitor.program;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import com.spentsmonitor.model.*;
 import com.spentsmonitor.database.*;
 import com.spentsmonitor.dao.*;
+import com.spentsmonitor.spreadsheet.SpreadsheetProduct;
 
 public class Program {
 
 	public static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws ParseException  {
 		DBConnector.TestConnection("teste.db");
 		
 		//testBD();
@@ -39,12 +41,11 @@ public class Program {
 		}
 	}
 	
-	public static void testProductDAO() {
+	public static void testProductDAO() throws ParseException   {
 		ProductDAO dao = new ProductDAOImp("teste.db");
 		System.out.println("Products");
-		for(Product p : dao.AllProducts()) {
-			System.out.println(p.toString());
-		}
+		//(new SpreadsheetProduct(dao.searchProductByDate(sdf.parse("01/01/2019"), sdf.parse("02/05/2019")), "2019")).organizeInfo();
+		(new SpreadsheetProduct(sdf.parse("01/01/2019"), sdf.parse("31/12/2019"))).organizeInfoYear();
 	}
 	
 	public static void testBD() {

@@ -13,4 +13,5 @@ public interface ProductDAO {
 	Product selectProduct(int id);
 	Product selectProductByName(String name);
 	List<Product> searchProduct(String name);
+	List<Product> searchProductByDate(Date init, Date end);
 }

@@ -29,7 +29,7 @@ public class ProductDAOImp implements ProductDAO{
 	@Override
 	public List<Product> AllProducts(){
 		List<Product> productsList = new ArrayList<Product>();
-		String sql = "SELECT products.product_id, name, cost, quantity, costs.profit, strftime('%d/%m/%Y', costs.spent_day) "
+		String sql = "SELECT products.product_id, name, cost, quantity, profit, strftime('%d/%m/%Y', costs.spent_day) "
 				   + "FROM products INNER JOIN costs ON products.product_id = costs.product_id";
 		try (Connection conn = DBConnector.connect(bdName);
 	         Statement stmt  = conn.createStatement();
@@ -40,7 +40,7 @@ public class ProductDAOImp implements ProductDAO{
 	                			rs.getDouble("cost"), 
 	                			sdf("dd/MM/yyyy").parse(rs.getString("strftime('%d/%m/%Y', costs.spent_day)")), 
 	                			rs.getInt("quantity"),
-	                			rs.getDouble("costs.profit")
+	                			rs.getDouble("profit")
 	                			));
 	            }
 	        } catch (SQLException e) {
@@ -211,6 +211,34 @@ public class ProductDAOImp implements ProductDAO{
                 				sdf("dd/MM/yyyy").parse(rs.getString("strftime('%d/%m/%Y', costs.spent_day)")), 
                 				rs.getInt("quantity"),
                 				rs.getDouble("costs.profit"))
+	                );
+	            }
+	        } catch (SQLException e) {
+	        	throw new DBException("Return error: " + e.getMessage());
+	        } catch (ParseException e) {
+	        	throw new DateException("Date format error: " + e.getMessage());
+			}
+		return productsList;
+	}
+	
+	@Override
+	public List<Product> searchProductByDate(Date init, Date end) {
+		List<Product> productsList = new ArrayList<Product>();
+		String sql = "SELECT products.product_id, name, cost, quantity, costs.profit, strftime('%d/%m/%Y', costs.spent_day) "
+				   + "FROM products INNER JOIN costs ON products.product_id = costs.product_id "
+				   + "WHERE costs.spent_day BETWEEN ? AND ?";
+		try (Connection conn = DBConnector.connect(bdName);
+	         PreparedStatement pstmt  = conn.prepareStatement(sql)){
+	            pstmt.setString(1, sdf("yyyy-MM-dd").format(init));
+	            pstmt.setString(2, sdf("yyyy-MM-dd").format(end));
+	            ResultSet rs  = pstmt.executeQuery();
+	            while (rs.next()) {
+	            	productsList.add(
+	                new Product(rs.getString("name"),
+                				rs.getDouble("cost"), 
+                				sdf("dd/MM/yyyy").parse(rs.getString("strftime('%d/%m/%Y', costs.spent_day)")), 
+                				rs.getInt("quantity"),
+                				rs.getDouble("profit"))
 	                );
 	            }
 	        } catch (SQLException e) {
