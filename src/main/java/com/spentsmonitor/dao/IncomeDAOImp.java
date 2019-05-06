@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.spentsmonitor.database.DBConnector;
@@ -166,6 +167,37 @@ public class IncomeDAOImp implements IncomeDAO{
 	        	throw new DateException("Date format error: " + e.getMessage());
 			}
 		return in;
+	}
+	
+	public List<Income> searchIncomeByDate(Date init, Date end){
+		String sql = "SELECT value, source, strftime('%d/%m/%Y', income_data.income_day), frequency_type, frequency_num FROM income"
+				+" INNER JOIN income_data"
+				+" ON income.income_id = income_data.income_id"
+				+ "WHERE income_data.income_day BETWEEN ? AND ?";
+	
+	List<Income> incomeList = new ArrayList<Income>();
+	
+	try (Connection conn = DBConnector.connect(bdName);
+		 PreparedStatement pstmt  = conn.prepareStatement(sql)){
+			pstmt.setString(1, sdf("yyyy-MM-dd").format(init));
+            pstmt.setString(2, sdf("yyyy-MM-dd").format(end));
+            ResultSet rs  = pstmt.executeQuery();
+            while (rs.next()) {
+            	incomeList.add(
+                new Income(rs.getDouble("value"), 
+                		   rs.getString("source"), 
+                		   sdf("dd/MM/yyyy").parse(rs.getString("strftime('%d/%m/%Y', income_data.income_day)")),
+                		   rs.getInt("frequency_type"), 
+                		   rs.getInt("frequency_num"))
+                );
+            }
+	        } catch (SQLException e) {
+	        	throw new DBException("List error: " + e.getMessage());
+	        } catch (ParseException e) {
+	        	throw new DateException("Date format error: " + e.getMessage());
+			}
+	
+		return incomeList;
 	}
 
 }

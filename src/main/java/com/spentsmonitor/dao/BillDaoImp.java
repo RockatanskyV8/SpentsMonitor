@@ -229,5 +229,33 @@ public class BillDaoImp implements BillDao {
 			}
 		return billsList;
 	}
+	
+	public List<Bill> searchBillByDate(Date init, Date end){
+		List<Bill> billsList = new ArrayList<Bill>();
+		String sql = "SELECT bills.bill_id, name, bill_type, cost, costs.bill_id, strftime('%d/%m/%Y', costs.spent_day) "
+				   + "FROM bills INNER JOIN costs ON bills.bill_id = costs.bill_id"
+				   + "WHERE costs.spent_day BETWEEN ? AND ?";
+		try (Connection conn = DBConnector.connect(bdName);
+			 PreparedStatement pstmt  = conn.prepareStatement(sql)){
+				pstmt.setString(1, sdf("yyyy-MM-dd").format(init));
+	            pstmt.setString(2, sdf("yyyy-MM-dd").format(end));
+	            ResultSet rs  = pstmt.executeQuery();
+				while (rs.next()) {
+		            	billsList.add(
+		            			new Bill(
+		    	            			rs.getString("name"),
+		    	            			rs.getDouble("cost"),
+		    	            			rs.getInt("bill_type"),
+		    	            			sdf("dd/MM/yyyy").parse((rs.getString("strftime('%d/%m/%Y', costs.spent_day)"))
+		            					))
+		            			);
+		            }
+	        } catch (SQLException e) {
+	            throw new DBException("List error: " + e.getMessage());
+	        } catch (ParseException e) {
+	        	throw new DateException("Date format error: " + e.getMessage());
+			}
+		return billsList;
+	}
 
 }
