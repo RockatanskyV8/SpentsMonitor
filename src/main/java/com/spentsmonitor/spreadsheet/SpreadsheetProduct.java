@@ -11,7 +11,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.apache.poi.ss.usermodel.BuiltinFormats;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFDataFormat;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -27,6 +30,9 @@ public class SpreadsheetProduct {
 	
     XSSFWorkbook workbook = new XSSFWorkbook(); 
     XSSFSheet spreadsheet = workbook.createSheet("Info");
+    
+    XSSFDataFormat df = workbook.createDataFormat();
+    XSSFCellStyle cs;
     
     XSSFRow row;
     Cell cell;
@@ -45,12 +51,22 @@ public class SpreadsheetProduct {
 		
 		for(Product p : Ps){
 			
-			Map< Integer, Object > info = (new objMapper()).optionMakerProduct(p);
-			
 			row = spreadsheet.createRow(rowid++);
+			
 			for(int k : order) {
 				cell = row.createCell(cellid++);
-				cell.setCellValue((info.get(k)).toString());
+				String dataType = p.toMap().get(k).getClass().getName();
+				cs = workbook.createCellStyle();
+				
+				if(dataType == "java.lang.String") { cell.setCellValue((String) p.toMap().get(k)); } 
+				else if(dataType == "java.lang.Double") { cs.setDataFormat(df.getFormat("#.##"));
+														  cell.setCellValue((Double) p.toMap().get(k)); } 
+				else if (dataType == "java.lang.Integer") { cell.setCellValue((Integer) p.toMap().get(k)); } 
+				else if (dataType == "java.util.Date") { cs.setDataFormat(df.getFormat("dd/MM/yyyy"));
+														 cell.setCellValue((Date) p.toMap().get(k) ); }
+				
+				cell.setCellStyle(cs);
+				
 			}
 			cellid = 0;
 		}
@@ -76,19 +92,5 @@ public class SpreadsheetProduct {
 	
 }
 
-/*
-row = spreadsheet.createRow(rowid++);
-cell = row.createCell(cellid++);
-cell.setCellValue(p.getName());
-cell = row.createCell(cellid++);
-cell.setCellValue(sdf("dd/MM/yyyy").format(p.getBuyDate()));
-cell = row.createCell(cellid++);
-cell.setCellValue(p.getPrice());
-cell = row.createCell(cellid++);
-cell.setCellValue(p.getProfit());
-cell = row.createCell(cellid++);
-cell.setCellValue(p.getQuantity());
-cellid = 0;
-*/
 
 

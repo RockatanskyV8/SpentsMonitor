@@ -2,6 +2,8 @@ package com.spentsmonitor.model;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class Product {
 	
@@ -61,6 +63,22 @@ public class Product {
 
 	public double total() {
 		return price * quantity;
+	}
+	
+	
+	
+	public Map< Integer, Object > toMap() {
+		Map < Integer, Object > info = new TreeMap < Integer, Object >();
+		
+		info.put(1, name);
+		info.put(2, quantity);
+		info.put(3, price);
+		info.put(4, profit);
+		info.put(5, buyDate);
+		info.put(6, total());
+		
+		return info;
+	
 	}
 
 	@Override

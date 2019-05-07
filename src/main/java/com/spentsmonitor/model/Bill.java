@@ -2,6 +2,8 @@ package com.spentsmonitor.model;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
+import java.util.TreeMap;
 
 import com.spentsmonitor.model.enums.BillType;
 
@@ -49,6 +51,18 @@ public class Bill {
 
 	public void setBillType(BillType billType) {
 		this.billType = billType;
+	}
+	
+	public Map< Integer, Object > toMap() {
+		Map < Integer, Object > info = new TreeMap < Integer, Object >();
+		
+		info.put(1, name);
+		info.put(2, value);
+		info.put(3, billType);
+		info.put(4, paymentDate);
+		
+		return info;
+	
 	}
 	
 	@Override

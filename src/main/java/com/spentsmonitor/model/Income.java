@@ -2,6 +2,8 @@ package com.spentsmonitor.model;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
+import java.util.TreeMap;
 
 import com.spentsmonitor.model.enums.FrequencyType;
 
@@ -59,7 +61,19 @@ public class Income {
 	public void setFrequencyNumber(Integer frequencyNumber) {
 		this.frequencyNumber = frequencyNumber;
 	}
-
+	
+	public Map< Integer, Object > toMap(){
+		Map < Integer, Object > info = new TreeMap < Integer, Object >();
+		
+		info.put(1, source);
+		info.put(2, value);
+		info.put(3, frequencyType);
+		info.put(4, frequencyNumber);
+		info.put(5, incomeDay);
+		
+		return info;
+	}
+	
 	@Override
 	public String toString() {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
