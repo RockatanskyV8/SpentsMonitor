@@ -50,29 +50,32 @@ public class SpreadsheetProduct {
 		int cellid = 0;
 		
 		for(Product p : Ps){
-			
 			row = spreadsheet.createRow(rowid++);
 			
 			for(int k : order) {
 				cell = row.createCell(cellid++);
-				String dataType = p.toMap().get(k).getClass().getName();
-				cs = workbook.createCellStyle();
-				
-				if(dataType == "java.lang.String") { cell.setCellValue((String) p.toMap().get(k)); } 
-				else if(dataType == "java.lang.Double") { cs.setDataFormat(df.getFormat("#.##"));
-														  cell.setCellValue((Double) p.toMap().get(k)); } 
-				else if (dataType == "java.lang.Integer") { cell.setCellValue((Integer) p.toMap().get(k)); } 
-				else if (dataType == "java.util.Date") { cs.setDataFormat(df.getFormat("dd/MM/yyyy"));
-														 cell.setCellValue((Date) p.toMap().get(k) ); }
-				
-				cell.setCellStyle(cs);
-				
+				writeCell(p, k);
 			}
 			cellid = 0;
 		}
 		
 		fileWriter();
 		
+	}
+	
+	private void writeCell(Product p, int k) {
+		
+		String dataType = p.toMap().get(k).getClass().getName();
+		cs = workbook.createCellStyle();
+		
+		if(dataType == "java.lang.String") { cell.setCellValue((String) p.toMap().get(k)); } 
+		else if(dataType == "java.lang.Double") { cs.setDataFormat(df.getFormat("#.##"));
+												  cell.setCellValue((Double) p.toMap().get(k)); } 
+		else if (dataType == "java.lang.Integer") { cell.setCellValue((Integer) p.toMap().get(k)); } 
+		else if (dataType == "java.util.Date") { cs.setDataFormat(df.getFormat("dd/MM/yyyy"));
+												 cell.setCellValue((Date) p.toMap().get(k) ); }
+		
+		cell.setCellStyle(cs);
 	}
 	
 	private void fileWriter() {
