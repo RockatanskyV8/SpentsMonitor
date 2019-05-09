@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class Product {
+public class Product implements Model{
 	
 	private String name;
 	private Double price;
@@ -65,8 +65,7 @@ public class Product {
 		return price * quantity;
 	}
 	
-	
-	
+	@Override
 	public Map< Integer, Object > toMap() {
 		Map < Integer, Object > info = new TreeMap < Integer, Object >();
 		
@@ -78,7 +77,6 @@ public class Product {
 		info.put(6, total());
 		
 		return info;
-	
 	}
 
 	@Override

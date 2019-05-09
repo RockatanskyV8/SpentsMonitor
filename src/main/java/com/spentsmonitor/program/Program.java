@@ -1,5 +1,6 @@
 package com.spentsmonitor.program;
 
+import java.util.List;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -42,10 +43,10 @@ public class Program {
 	}
 	
 	public static void testProductDAO() throws ParseException   {
-		//ProductDAO dao = new ProductDAOImp("teste.db");
+		ProductDAO dao = new ProductDAOImp("teste.db");
+		List<Product> Ps = dao.searchProductByDate(sdf.parse("01/01/2019"), sdf.parse("31/12/2019"));
 		System.out.println("Products");
-		(new SpreadsheetProduct(sdf.parse("01/01/2019"), 
-								sdf.parse("31/12/2019"))).organizeInfo(new int[]{5,1,2,3,4});
+		(new SpreadsheetProduct(new int[]{5,1,2,3,4})).organizeProducts(Ps);
 	}
 	
 	public static void testBD() {

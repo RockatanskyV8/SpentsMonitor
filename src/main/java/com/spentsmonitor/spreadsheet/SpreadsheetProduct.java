@@ -21,12 +21,11 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.util.Date;
 
-import com.spentsmonitor.model.Product;
-import com.spentsmonitor.dao.*;
+import com.spentsmonitor.model.*;
 
 public class SpreadsheetProduct {
 	
-	private Date [] interval = new Date [2];
+	private int [] order;
 	
     XSSFWorkbook workbook = new XSSFWorkbook(); 
     XSSFSheet spreadsheet = workbook.createSheet("Info");
@@ -37,43 +36,48 @@ public class SpreadsheetProduct {
     XSSFRow row;
     Cell cell;
 	
-	public SpreadsheetProduct(Date begin, Date end) {
-		interval[0] = begin;
-		interval[1] = end;
+	public SpreadsheetProduct(int[] order) { this.order = order; }
+	
+	public void organizeIncome(List<Income> In) throws ParseException {
+		int rowid = 0; int cellid = 0;
+		for(Income i : In) { extractInfo(i, rowid++, cellid); }
+		fileWriter();
 	}
 	
-	public void organizeInfo(int[] order) throws ParseException {
-		ProductDAO dao = new ProductDAOImp("teste.db");
-		List<Product> Ps = dao.searchProductByDate(interval[0], interval[1]);
+	public void organizeProducts(List<Product> Ps) throws ParseException {
+		int rowid = 0; int cellid = 0;
+		for(Product p : Ps) { extractInfo(p, rowid++, cellid); }
+		fileWriter();
+	}
+	
+	public void organizeBills(List<Bill> Bs) throws ParseException {
+		int rowid = 0; int cellid = 0;
+		for(Bill b : Bs) { extractInfo(b, rowid++, cellid); }
+		fileWriter();		
+	}
+	
+	private void extractInfo(Model p, int rowid, int cellid) {
 		
-		int rowid = 0;
-		int cellid = 0;
+		row = spreadsheet.createRow(rowid);
 		
-		for(Product p : Ps){
-			row = spreadsheet.createRow(rowid++);
-			
-			for(int k : order) {
-				cell = row.createCell(cellid++);
-				writeCell(p, k);
-			}
-			cellid = 0;
+		for(int k : order) {
+			cell = row.createCell(cellid++);
+			writeInfo(p, k);
 		}
 		
-		fileWriter();
-		
 	}
 	
-	private void writeCell(Product p, int k) {
+	private void writeInfo(Model m, int k) {
 		
-		String dataType = p.toMap().get(k).getClass().getName();
+		String dataType = m.toMap().get(k).getClass().getName();
 		cs = workbook.createCellStyle();
 		
-		if(dataType == "java.lang.String") { cell.setCellValue((String) p.toMap().get(k)); } 
+		if(dataType == "java.lang.String") { cell.setCellValue((String) m.toMap().get(k)); } 
 		else if(dataType == "java.lang.Double") { cs.setDataFormat(df.getFormat("#.##"));
-												  cell.setCellValue((Double) p.toMap().get(k)); } 
-		else if (dataType == "java.lang.Integer") { cell.setCellValue((Integer) p.toMap().get(k)); } 
+												  cell.setCellValue((Double) m.toMap().get(k)); } 
+		else if (dataType == "java.lang.Integer") { cell.setCellValue((Integer) m.toMap().get(k)); } 
 		else if (dataType == "java.util.Date") { cs.setDataFormat(df.getFormat("dd/MM/yyyy"));
-												 cell.setCellValue((Date) p.toMap().get(k) ); }
+												 cell.setCellValue((Date) m.toMap().get(k) ); }
 		
 		cell.setCellStyle(cs);
 	}
