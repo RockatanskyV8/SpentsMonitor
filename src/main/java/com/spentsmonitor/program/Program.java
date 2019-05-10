@@ -46,7 +46,7 @@ public class Program {
 		ProductDAO dao = new ProductDAOImp("teste.db");
 		List<Product> Ps = dao.searchProductByDate(sdf.parse("01/01/2019"), sdf.parse("31/12/2019"));
 		System.out.println("Products");
-		(new SpreadsheetProduct(new int[]{5,1,2,3,4})).organizeProducts(Ps);
+		(new SpreadsheetProduct(new int[]{5,1,2,3,4}, "2019")).organizeProducts(Ps);
 	}
 	
 	public static void testBD() {

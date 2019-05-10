@@ -5,13 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
 
-import org.apache.poi.ss.usermodel.BuiltinFormats;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFDataFormat;
@@ -26,9 +21,14 @@ import com.spentsmonitor.model.*;
 public class SpreadsheetProduct {
 	
 	private int [] order;
+	private String pageName;
 	
-    XSSFWorkbook workbook = new XSSFWorkbook(); 
-    XSSFSheet spreadsheet = workbook.createSheet("Info");
+	public SpreadsheetProduct(int[] order, String pageName) { 
+		this.order = order;
+		this.pageName = pageName;
+	}
+	
+	XSSFWorkbook workbook = new XSSFWorkbook(); 
     
     XSSFDataFormat df = workbook.createDataFormat();
     XSSFCellStyle cs;
@@ -36,35 +36,32 @@ public class SpreadsheetProduct {
     XSSFRow row;
     Cell cell;
 	
-	public SpreadsheetProduct(int[] order) { this.order = order; }
-	
 	public void organizeIncome(List<Income> In) throws ParseException {
 		int rowid = 0; int cellid = 0;
 		for(Income i : In) { extractInfo(i, rowid++, cellid); }
-		fileWriter();
+		fileWriter("Writesheet");
 	}
 	
 	public void organizeProducts(List<Product> Ps) throws ParseException {
 		int rowid = 0; int cellid = 0;
 		for(Product p : Ps) { extractInfo(p, rowid++, cellid); }
-		fileWriter();
+		fileWriter("Writesheet");
 	}
 	
 	public void organizeBills(List<Bill> Bs) throws ParseException {
 		int rowid = 0; int cellid = 0;
 		for(Bill b : Bs) { extractInfo(b, rowid++, cellid); }
-		fileWriter();		
+		fileWriter("Writesheet");
 	}
 	
 	private void extractInfo(Model p, int rowid, int cellid) {
-		
+		XSSFSheet spreadsheet = workbook.createSheet(pageName);
 		row = spreadsheet.createRow(rowid);
 		
 		for(int k : order) {
 			cell = row.createCell(cellid++);
 			writeInfo(p, k);
 		}
-		
 	}
 	
 	private void writeInfo(Model m, int k) {
@@ -82,10 +79,10 @@ public class SpreadsheetProduct {
 		cell.setCellStyle(cs);
 	}
 	
-	private void fileWriter() {
+	private void fileWriter(String SheetName) {
 		FileOutputStream out;
 		try {
-			out = new FileOutputStream(new File("Writesheet.xlsx"));
+			out = new FileOutputStream(new File(SheetName + ".xlsx"));
 		    workbook.write(out);
 		    out.close();
 		} catch (FileNotFoundException e) {
