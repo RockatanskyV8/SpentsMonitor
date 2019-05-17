@@ -7,7 +7,7 @@ import java.util.TreeMap;
 
 import com.spentsmonitor.model.enums.BillType;
 
-public class Bill implements Model{
+public class Bill {
 	
 	private String name;
 	private Double value;
@@ -53,7 +53,6 @@ public class Bill implements Model{
 		this.billType = billType;
 	}
 	
-	@Override
 	public Map< Integer, Object > toMap() {
 		Map < Integer, Object > info = new TreeMap < Integer, Object >();
 		

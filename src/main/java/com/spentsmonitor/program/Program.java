@@ -44,9 +44,13 @@ public class Program {
 	
 	public static void testProductDAO() throws ParseException   {
 		ProductDAO dao = new ProductDAOImp("teste.db");
-		List<Product> Ps = dao.searchProductByDate(sdf.parse("01/01/2019"), sdf.parse("31/12/2019"));
 		System.out.println("Products");
-		(new SpreadsheetProduct(new int[]{5,1,2,3,4}, "2019")).organizeProducts(Ps);
+		SpreadsheetProduct sp = new SpreadsheetProduct(new int[]{5,1,2,3,4}, "2019");
+		int rowid = 1; int cellid = 0;
+		sp.writeTitleCell("Products", 0, 0, 0);
+		for(Product p : dao.searchProductByDate(sdf.parse("01/01/2019"), sdf.parse("31/12/2019"))) {
+			sp.extractInfo(p.toMap(), rowid++, cellid);
+		}
 	}
 	
 	public static void testBD() {

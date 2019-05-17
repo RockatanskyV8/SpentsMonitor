@@ -7,7 +7,7 @@ import java.util.TreeMap;
 
 import com.spentsmonitor.model.enums.FrequencyType;
 
-public class Income implements Model{
+public class Income {
 	private Double value;
 	private String source;
 	private Date incomeDay;
@@ -62,7 +62,6 @@ public class Income implements Model{
 		this.frequencyNumber = frequencyNumber;
 	}
 	
-	@Override
 	public Map< Integer, Object > toMap(){
 		Map < Integer, Object > info = new TreeMap < Integer, Object >();
 		
