@@ -48,6 +48,7 @@ public class Program {
 		SpreadsheetProduct sp = new SpreadsheetProduct(new int[]{5,1,2,3,4}, "2019");
 		int rowid = 1; int cellid = 0;
 		sp.writeTitleCell("Products", 0, 0, 0);
+		sp.writeHeads(new String[] {"Dia","Nome","Quantidade","Valor","Venda"}, rowid++);
 		for(Product p : dao.searchProductByDate(sdf.parse("01/01/2019"), sdf.parse("31/12/2019"))) {
 			sp.extractInfo(p.toMap(), rowid++, cellid);
 		}
