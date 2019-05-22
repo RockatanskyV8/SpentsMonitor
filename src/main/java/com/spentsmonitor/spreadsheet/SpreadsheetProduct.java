@@ -16,8 +16,11 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.Row;
 
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 public class SpreadsheetProduct {
 	
@@ -29,39 +32,45 @@ public class SpreadsheetProduct {
     XSSFDataFormat df = workbook.createDataFormat();
     XSSFCellStyle cs = workbook.createCellStyle();
     
-    XSSFRow row;
+    //Row row;
     Cell cell;
+    
+   // Iterator<Row> rows = spreadsheet.iterator();
     
 	public SpreadsheetProduct(int[] order, String pageName) { 
 		this.order = order;
 		spreadsheet = workbook.createSheet(pageName);
 	}
 	
-    public void writeTitleCell(String title, int rowFrom, int rowTo, int colFrom) {
-    	row = spreadsheet.createRow(rowFrom);
-    	cell = CellUtil.createCell(row, colFrom, title);
+	public void writeTitleCell(String title, int rowid, int cellid) {
+		Row row = setRow(rowid);
+    	cell = CellUtil.createCell(row, cellid, title);
     	CellUtil.setAlignment(cell, HorizontalAlignment.CENTER);
-    	spreadsheet.addMergedRegion(new CellRangeAddress(rowFrom,rowTo,colFrom, order.length - 1));
-    }
-    
-    public void writeHeads(String [] headsName, int rowid) {
-    	row = spreadsheet.createRow(rowid);
-    	
-    	for(int i = 0; i < headsName.length; i++) {
-    		cell = CellUtil.createCell(row, i, headsName[i]);
-    		CellUtil.setAlignment(cell, HorizontalAlignment.CENTER);
-    	}
-    }
-    
+	}
+	
+   public void writeHeads(String [] headsName, int rowid, int cellid) {
+	   Row row = setRow(rowid);
+	   
+	   for(String head : headsName) {
+		   cell = CellUtil.createCell(row, cellid++, head);
+		   CellUtil.setAlignment(cell, HorizontalAlignment.CENTER);
+	   }
+   }
+	
 	public void extractInfo(Map< Integer, Object > p, int rowid, int cellid) {
+		Row row = setRow(rowid);
 		
-		row = spreadsheet.createRow(rowid);
-		
-		for(int k : order) {
+		for(int o : order) {
 			cell = row.createCell(cellid++);
-			writeInfo(p.get(k));
+			writeInfo(p.get(o));
 		}
 		fileWriter("Writesheet");
+	}
+	
+	private Row setRow(int rowid) {
+		Row row = spreadsheet.getRow(rowid);
+		if(row == null) { row = spreadsheet.createRow(rowid);}
+		return row;
 	}
 	
 	private void writeInfo(Object o) {

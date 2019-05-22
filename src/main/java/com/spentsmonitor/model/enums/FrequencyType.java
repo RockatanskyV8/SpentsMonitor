@@ -4,11 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum FrequencyType {
+	NONE(0),
 	YEAR(1),
 	MONTH(2),
 	WEEK(3),
-	DAY(4),
-	NONE(5);
+	DAY(4);
 	
 	private int value;
 	private static Map map = new HashMap<>();

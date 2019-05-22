@@ -12,45 +12,53 @@ import com.spentsmonitor.spreadsheet.SpreadsheetProduct;
 public class Program {
 
 	public static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+	public static SpreadsheetProduct sp;// = new SpreadsheetProduct(new int[]{5,1,2,3,4}, "2019");
 	
 	public static void main(String[] args) throws ParseException  {
 		DBConnector.TestConnection("teste.db");
 		
 		//testBD();
 		
-		testIncomeDAO();
+		sp = new SpreadsheetProduct(new int[]{5,1,2,3,4}, "2019");
+		int rowid = 0; int cellid = 0;
+		testIncomeDAO(rowid, cellid + 7);
 		System.out.println();
-		testProductDAO();
+		testProductDAO(rowid, cellid);
 		System.out.println();
 		testBillDAO();
 		
 	}
 	
-	public static void testIncomeDAO() {
+	public static void testIncomeDAO(int rowid, int cellid) throws ParseException {
 		IncomeDAO dao = new IncomeDAOImp("teste.db");
+		List<Income> Ps = dao.searchIncomeByDate(sdf.parse("01/01/2019"), sdf.parse("31/12/2019"));
 		System.out.println("Income");
-		for(Income i : dao.AllIncomes()) {
-			System.out.println(i.toString());
+		sp.writeTitleCell("Income", rowid++, cellid);
+		sp.writeHeads(new String[] {"Dia do Pagamento","Fonte","Valor","Tipo de Frequência","Quão frequente"}, rowid++, cellid);
+		for(Income p : Ps) {
+			sp.extractInfo(p.toMap(), rowid, cellid);
 		}
+		
 	}
+	
+	public static void testProductDAO(int rowid, int cellid) throws ParseException   {
+		ProductDAO dao = new ProductDAOImp("teste.db");
+		List<Product> Ps = dao.searchProductByDate(sdf.parse("01/01/2019"), sdf.parse("31/12/2019"));
+		System.out.println("Products");
+		sp.writeTitleCell("Products", rowid++, cellid);
+		sp.writeHeads(new String[] {"Dia","Nome","Quantidade","Valor","Venda"}, rowid++, cellid);
+		for(Product p : Ps) {
+			sp.extractInfo(p.toMap(), rowid, cellid);
+		}
+		
+	}
+	
 	
 	public static void testBillDAO() {
 		BillDao dao = new BillDaoImp("teste.db");
 		System.out.println("Bill");
 		for (Bill b : dao.AllBills()) {
 			System.out.println(b.toString());
-		}
-	}
-	
-	public static void testProductDAO() throws ParseException   {
-		ProductDAO dao = new ProductDAOImp("teste.db");
-		System.out.println("Products");
-		SpreadsheetProduct sp = new SpreadsheetProduct(new int[]{5,1,2,3,4}, "2019");
-		int rowid = 1; int cellid = 0;
-		sp.writeTitleCell("Products", 0, 0, 0);
-		sp.writeHeads(new String[] {"Dia","Nome","Quantidade","Valor","Venda"}, rowid++);
-		for(Product p : dao.searchProductByDate(sdf.parse("01/01/2019"), sdf.parse("31/12/2019"))) {
-			sp.extractInfo(p.toMap(), rowid++, cellid);
 		}
 	}
 	

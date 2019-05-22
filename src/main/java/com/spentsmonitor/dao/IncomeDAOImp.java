@@ -15,6 +15,7 @@ import com.spentsmonitor.database.DBConnector;
 import com.spentsmonitor.exceptions.DBException;
 import com.spentsmonitor.exceptions.DateException;
 import com.spentsmonitor.model.Income;
+import com.spentsmonitor.model.Product;
 
 public class IncomeDAOImp implements IncomeDAO{
 	
@@ -169,11 +170,12 @@ public class IncomeDAOImp implements IncomeDAO{
 		return in;
 	}
 	
+	@Override
 	public List<Income> searchIncomeByDate(Date init, Date end){
 		String sql = "SELECT value, source, strftime('%d/%m/%Y', income_data.income_day), frequency_type, frequency_num FROM income"
 				+" INNER JOIN income_data"
 				+" ON income.income_id = income_data.income_id"
-				+ "WHERE income_data.income_day BETWEEN ? AND ?";
+				+" WHERE income_data.income_day BETWEEN ? AND ?";
 	
 	List<Income> incomeList = new ArrayList<Income>();
 	
@@ -199,5 +201,5 @@ public class IncomeDAOImp implements IncomeDAO{
 	
 		return incomeList;
 	}
-
+	
 }
