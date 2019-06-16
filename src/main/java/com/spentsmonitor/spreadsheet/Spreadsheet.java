@@ -7,22 +7,17 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellUtil;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFDataFormat;
-import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Row;
 
 import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
 
-public class SpreadsheetProduct {
+public class Spreadsheet {
 	
 	private int [] order;
 	
@@ -32,14 +27,15 @@ public class SpreadsheetProduct {
     XSSFDataFormat df = workbook.createDataFormat();
     XSSFCellStyle cs = workbook.createCellStyle();
     
-    //Row row;
     Cell cell;
     
-   // Iterator<Row> rows = spreadsheet.iterator();
-    
-	public SpreadsheetProduct(int[] order, String pageName) { 
-		this.order = order;
+	public Spreadsheet(String pageName) { 
+		//this.order = order;
 		spreadsheet = workbook.createSheet(pageName);
+	}
+	
+	public void defineOrder(int[] order) {
+		this.order = order;
 	}
 	
 	public void writeTitleCell(String title, int rowid, int cellid) {
@@ -100,6 +96,6 @@ public class SpreadsheetProduct {
 			e.printStackTrace();
 		}
 
-		System.out.println("Writesheet.xlsx written successfully");
+		System.out.println(SheetName + ".xlsx written successfully");
 	}
 }

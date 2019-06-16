@@ -58,7 +58,7 @@ public class Bill {
 		
 		info.put(1, name);
 		info.put(2, value);
-		info.put(3, billType);
+		info.put(3, billType.toString());
 		info.put(4, paymentDate);
 		
 		return info;

@@ -233,7 +233,7 @@ public class BillDaoImp implements BillDao {
 	public List<Bill> searchBillByDate(Date init, Date end){
 		List<Bill> billsList = new ArrayList<Bill>();
 		String sql = "SELECT bills.bill_id, name, bill_type, cost, costs.bill_id, strftime('%d/%m/%Y', costs.spent_day) "
-				   + "FROM bills INNER JOIN costs ON bills.bill_id = costs.bill_id"
+				   + "FROM bills INNER JOIN costs ON bills.bill_id = costs.bill_id "
 				   + "WHERE costs.spent_day BETWEEN ? AND ?";
 		try (Connection conn = DBConnector.connect(bdName);
 			 PreparedStatement pstmt  = conn.prepareStatement(sql)){

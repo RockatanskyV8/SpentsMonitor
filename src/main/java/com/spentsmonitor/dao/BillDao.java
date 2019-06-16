@@ -12,4 +12,5 @@ public interface BillDao {
 	void updateBill(int id, Date d, Bill b);
 	Bill selectBill(int id);
 	Bill selectBillByName(String name);
+	List<Bill> searchBillByDate(Date init, Date end);
 }
