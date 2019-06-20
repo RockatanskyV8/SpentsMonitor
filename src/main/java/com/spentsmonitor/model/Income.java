@@ -67,7 +67,7 @@ public class Income {
 		
 		info.put(1, source);
 		info.put(2, value);
-		info.put(3, frequencyType);
+		info.put(3, frequencyType.toString());
 		info.put(4, frequencyNumber);
 		info.put(5, incomeDay);
 		

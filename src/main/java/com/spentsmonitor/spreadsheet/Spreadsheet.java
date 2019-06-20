@@ -38,6 +38,10 @@ public class Spreadsheet {
 		this.order = order;
 	}
 	
+	public int[] getOrder() {
+		return order;
+	}
+	
 	public void writeTitleCell(String title, int rowid, int cellid) {
 		Row row = setRow(rowid);
     	cell = CellUtil.createCell(row, cellid, title);
@@ -63,13 +67,20 @@ public class Spreadsheet {
 		fileWriter("Writesheet");
 	}
 	
+	public void extractInfo(Object o, int rowid, int cellid) {
+		Row row = setRow(rowid);
+		cell = row.createCell(cellid);
+		writeInfo(o);
+		fileWriter("Writesheet");
+	}
+	
 	private Row setRow(int rowid) {
 		Row row = spreadsheet.getRow(rowid);
 		if(row == null) { row = spreadsheet.createRow(rowid);}
 		return row;
 	}
 	
-	private void writeInfo(Object o) {
+	public void writeInfo(Object o) {
 		
 		String dataType = o.getClass().getName();
 		XSSFCellStyle cs1 = workbook.createCellStyle();

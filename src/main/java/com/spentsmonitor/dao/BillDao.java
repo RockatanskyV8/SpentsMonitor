@@ -13,4 +13,5 @@ public interface BillDao {
 	Bill selectBill(int id);
 	Bill selectBillByName(String name);
 	List<Bill> searchBillByDate(Date init, Date end);
+	double sumOfValues(Date init, Date end);
 }

@@ -12,4 +12,5 @@ public interface IncomeDAO {
 	void updateFrequentIncome(int id, Income i);
 	Income selectIncomeBySource(String source);
 	List<Income> searchIncomeByDate(Date init, Date end);
+	double sumOfValues(Date init, Date end);
 }

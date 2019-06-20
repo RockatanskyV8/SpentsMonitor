@@ -248,4 +248,24 @@ public class ProductDAOImp implements ProductDAO{
 			}
 		return productsList;
 	}
+	
+	public double sumOfValues(Date init, Date end) {
+		Double resultFinal = 0.0;
+		String sql = "SELECT SUM(cost) AS TOTAL_PRODUCTS "
+				   + "FROM products INNER JOIN costs ON products.product_id = costs.product_id "
+				   + "WHERE costs.spent_day BETWEEN ? AND ?";
+		try (Connection conn = DBConnector.connect(bdName);
+				 PreparedStatement pstmt  = conn.prepareStatement(sql)){
+			pstmt.setString(1, sdf("yyyy-MM-dd").format(init));
+            pstmt.setString(2, sdf("yyyy-MM-dd").format(end));
+            ResultSet rs  = pstmt.executeQuery();
+        	resultFinal += rs.getDouble("TOTAL_PRODUCTS");
+		}catch(SQLException e) {
+			throw new DBException("List error: " + e.getMessage());
+		}
+		
+		return resultFinal;
+	}
+	
+	
 }

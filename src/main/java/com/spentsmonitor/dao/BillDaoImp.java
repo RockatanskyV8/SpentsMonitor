@@ -257,5 +257,24 @@ public class BillDaoImp implements BillDao {
 			}
 		return billsList;
 	}
+	
+	public double sumOfValues(Date init, Date end) {
+		Double resultFinal = 0.0;
+		String sql = "SELECT SUM(cost) AS TOTAL_BILLS "
+				   + "FROM bills INNER JOIN costs ON bills.bill_id = costs.bill_id "
+				   + "WHERE costs.spent_day BETWEEN ? AND ?";
+		try (Connection conn = DBConnector.connect(bdName);
+				 PreparedStatement pstmt  = conn.prepareStatement(sql)){
+			pstmt.setString(1, sdf("yyyy-MM-dd").format(init));
+            pstmt.setString(2, sdf("yyyy-MM-dd").format(end));
+            ResultSet rs  = pstmt.executeQuery();
+        	resultFinal += rs.getDouble("TOTAL_BILLS");
+        	
+		}catch(SQLException e) {
+			throw new DBException("List error: " + e.getMessage());
+		}
+		
+		return resultFinal;
+	}
 
 }

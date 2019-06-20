@@ -202,4 +202,23 @@ public class IncomeDAOImp implements IncomeDAO{
 		return incomeList;
 	}
 	
+	public double sumOfValues(Date init, Date end) {
+		Double resultFinal = 0.0;
+		String sql = "SELECT SUM(value) AS TOTAL_INCOME FROM income"
+					+" INNER JOIN income_data"
+					+" ON income.income_id = income_data.income_id"
+					+" WHERE income_data.income_day BETWEEN ? AND ?";
+		try (Connection conn = DBConnector.connect(bdName);
+				 PreparedStatement pstmt  = conn.prepareStatement(sql)){
+			pstmt.setString(1, sdf("yyyy-MM-dd").format(init));
+            pstmt.setString(2, sdf("yyyy-MM-dd").format(end));
+            ResultSet rs  = pstmt.executeQuery();
+        	resultFinal += rs.getDouble("TOTAL_INCOME");
+		}catch(SQLException e) {
+			throw new DBException("List error: " + e.getMessage());
+		}
+		
+		return resultFinal;
+	}
+	
 }

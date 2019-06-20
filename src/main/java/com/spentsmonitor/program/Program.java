@@ -37,9 +37,9 @@ public class Program {
 		sp.writeHeads(new String[] {"Dia do Pagamento","Fonte","Valor","Tipo de Frequência","Quão frequente"}, rowid++, cellid);
 		sp.defineOrder(new int[]{5,1,2,3,4});
 		for(Income p : Ps) {
-			sp.extractInfo(p.toMap(), rowid, cellid);
+			sp.extractInfo(p.toMap(), rowid++, cellid);
 		}
-		
+		sp.extractInfo(dao.sumOfValues(sdf.parse("01/01/2019"), sdf.parse("31/12/2019")), rowid++, cellid + 2);
 	}
 	
 	public static void testProductDAO(int rowid, int cellid) throws ParseException   {
@@ -47,12 +47,12 @@ public class Program {
 		List<Product> Ps = dao.searchProductByDate(sdf.parse("01/01/2019"), sdf.parse("31/12/2019"));
 		System.out.println("Products");
 		sp.writeTitleCell("Products", rowid++, cellid);
-		sp.writeHeads(new String[] {"Dia","Nome","Quantidade","Valor","Venda"}, rowid++, cellid);
-		sp.defineOrder(new int[]{5,1,2,3,4});
+		sp.writeHeads(new String[] {"Dia","Nome","Quantidade","Valor","Total"}, rowid++, cellid);
+		sp.defineOrder(new int[]{5,1,2,3,6});
 		for(Product p : Ps) {
-			sp.extractInfo(p.toMap(), rowid, cellid);
+			sp.extractInfo(p.toMap(), rowid++, cellid);
 		}
-		
+		sp.extractInfo(dao.sumOfValues(sdf.parse("01/01/2019"), sdf.parse("31/12/2019")), rowid++, cellid + 3);
 	}
 	
 	
@@ -64,8 +64,9 @@ public class Program {
 		sp.writeHeads(new String[] {"Nome","Valor","Tipo","Data"}, rowid++, cellid);
 		sp.defineOrder(new int[]{1,2,3,4});
 		for (Bill b : Bs) {
-			sp.extractInfo(b.toMap(), rowid, cellid);
+			sp.extractInfo(b.toMap(), rowid++, cellid);
 		}
+		sp.extractInfo(dao.sumOfValues(sdf.parse("01/01/2019"), sdf.parse("31/12/2019")), rowid++, cellid + 1);
 	}
 	
 	public static void testBD() {

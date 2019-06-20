@@ -61,8 +61,12 @@ public class Product{
 		this.profit = profit;
 	}
 
-	public double total() {
+	public double totalBuy() {
 		return price * quantity;
+	}
+	
+	public double totalSell() {
+		return profit * quantity;
 	}
 	
 	public Map< Integer, Object > toMap() {
@@ -73,7 +77,8 @@ public class Product{
 		info.put(3, price);
 		info.put(4, profit);
 		info.put(5, buyDate);
-		info.put(6, total());
+		info.put(6, totalBuy());
+		info.put(7, totalSell());
 		
 		return info;
 	}
@@ -85,8 +90,9 @@ public class Product{
 			   ", Preço: " + price +
 			   ", Data: " + sdf.format(buyDate) +
 			   ", Quantidade: " + quantity +
-			   ", Total: " + total() +
-			   ", Venda: " + profit;
+			   ", Total Comprado: " + totalBuy() +
+			   ", Venda: " + profit +
+			   ", Total Vendido: " + totalSell();
 	}
 
 }
