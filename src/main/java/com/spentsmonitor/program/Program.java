@@ -12,7 +12,7 @@ import com.spentsmonitor.spreadsheet.Spreadsheet;
 public class Program {
 
 	public static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-	public static Spreadsheet sp;// = new SpreadsheetProduct(new int[]{5,1,2,3,4}, "2019");
+	public static Spreadsheet sp;
 	
 	public static void main(String[] args) throws ParseException  {
 		DBConnector.TestConnection("teste.db");
@@ -33,9 +33,10 @@ public class Program {
 		IncomeDAO dao = new IncomeDAOImp("teste.db");
 		List<Income> Ps = dao.searchIncomeByDate(sdf.parse("01/01/2019"), sdf.parse("31/12/2019"));
 		System.out.println("Income");
+		sp.defineOrder(new int[]{5,1,2,3,4});
 		sp.writeTitleCell("Income", rowid++, cellid);
 		sp.writeHeads(new String[] {"Dia do Pagamento","Fonte","Valor","Tipo de Frequência","Quão frequente"}, rowid++, cellid);
-		sp.defineOrder(new int[]{5,1,2,3,4});
+		
 		for(Income p : Ps) {
 			sp.extractInfo(p.toMap(), rowid++, cellid);
 		}
@@ -46,9 +47,9 @@ public class Program {
 		ProductDAO dao = new ProductDAOImp("teste.db");
 		List<Product> Ps = dao.searchProductByDate(sdf.parse("01/01/2019"), sdf.parse("31/12/2019"));
 		System.out.println("Products");
+		sp.defineOrder(new int[]{5,1,2,3,6});
 		sp.writeTitleCell("Products", rowid++, cellid);
 		sp.writeHeads(new String[] {"Dia","Nome","Quantidade","Valor","Total"}, rowid++, cellid);
-		sp.defineOrder(new int[]{5,1,2,3,6});
 		for(Product p : Ps) {
 			sp.extractInfo(p.toMap(), rowid++, cellid);
 		}
@@ -60,9 +61,9 @@ public class Program {
 		BillDao dao = new BillDaoImp("teste.db");
 		List<Bill> Bs = dao.searchBillByDate(sdf.parse("01/01/2019"), sdf.parse("31/12/2019"));
 		System.out.println("Bill");
+		sp.defineOrder(new int[]{1,2,3,4});
 		sp.writeTitleCell("Bills", rowid++, cellid);
 		sp.writeHeads(new String[] {"Nome","Valor","Tipo","Data"}, rowid++, cellid);
-		sp.defineOrder(new int[]{1,2,3,4});
 		for (Bill b : Bs) {
 			sp.extractInfo(b.toMap(), rowid++, cellid);
 		}

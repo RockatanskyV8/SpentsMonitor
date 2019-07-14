@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellUtil;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFDataFormat;
@@ -45,6 +46,7 @@ public class Spreadsheet {
 	public void writeTitleCell(String title, int rowid, int cellid) {
 		Row row = setRow(rowid);
     	cell = CellUtil.createCell(row, cellid, title);
+    	spreadsheet.addMergedRegion(new CellRangeAddress(rowid, rowid, cellid, cellid + order.length -1));
     	CellUtil.setAlignment(cell, HorizontalAlignment.CENTER);
 	}
 	
@@ -57,12 +59,13 @@ public class Spreadsheet {
 	   }
    }
 	
-	public void extractInfo(Map< Integer, Object > p, int rowid, int cellid) {
+   public void extractInfo(Map< Integer, Object > p, int rowid, int cellid) {
 		Row row = setRow(rowid);
 		
 		for(int o : order) {
-			cell = row.createCell(cellid++);
+			cell = row.createCell(cellid);
 			writeInfo(p.get(o));
+			spreadsheet.autoSizeColumn(cellid++);
 		}
 		fileWriter("Writesheet");
 	}
@@ -95,11 +98,20 @@ public class Spreadsheet {
 		cell.setCellStyle(cs1);
 	}
 	
+	private void recizeAll(int cellid) {
+	    //for (int i = cellid; i < spreadsheet.getRow(0).getPhysicalNumberOfCells(); i++) {
+	    for (int i = cellid; i < order.length; i++) {
+	    	//spreadsheet.autoSizeColumn(i);
+	    	System.out.println(i);
+	    }
+	}
+	
 	private void fileWriter(String SheetName) {
 		FileOutputStream out;
 		try {
 			out = new FileOutputStream(new File(SheetName + ".xlsx"));
 		    workbook.write(out);
+		    
 		    out.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
